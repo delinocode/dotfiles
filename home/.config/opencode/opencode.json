@@ -1,0 +1,55 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "share": "disabled",
+  "model": "macpro-ollama/qwen3.8-flash-next:125b-mlx",
+  "small_model": "macbook-omlx/Qwen3.8-27B-4bit",
+  "provider": {
+    "macpro-ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Mac Pro — Ollama",
+      "options": {
+        "baseURL": "http://macpro:11434/v1",
+        "apiKey": "ollama"
+      },
+      "models": {
+        "qwen3.8-flash-next:125b-mlx": {
+          "name": "Qwen3.8 Flash Next 125B (Mac Pro)",
+          "tools": true,
+          "reasoning": true,
+          "limit": {
+            "context": 32768,
+            "output": 8192
+          }
+        }
+      }
+    },
+    "macbook-omlx": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "MacBook Air — OMLX local",
+      "options": {
+        "baseURL": "http://127.0.0.1:8000/v1",
+        "apiKey": "local"
+      },
+      "models": {
+        "Qwen3.8-27B-4bit": {
+          "name": "Qwen3.8 27B 4-bit (OMLX)",
+          "tools": true,
+          "reasoning": true,
+          "limit": {
+            "context": 8192,
+            "output": 4096
+          }
+        },
+        "Qwen3.8-27B-MTPLX-Optimized-Speed": {
+          "name": "Qwen3.8 27B MTP Speed (OMLX)",
+          "tools": true,
+          "reasoning": true,
+          "limit": {
+            "context": 8192,
+            "output": 4096
+          }
+        }
+      }
+    }
+  }
+}
