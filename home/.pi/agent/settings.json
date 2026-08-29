@@ -13,7 +13,7 @@
   "collapseChangelog": true,
   "packages": [],
   "lastChangelogVersion": "0.75.4",
-  "defaultProvider": "huggingface",
-  "defaultModel": "deepseek-ai/DeepSeek-V4-Pro",
+  "defaultProvider": "nvidia",
+  "defaultModel": "deepseek-ai/deepseek-v4-pro-0813",
   "defaultThinkingLevel": "medium"
 }

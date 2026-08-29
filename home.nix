@@ -119,6 +119,12 @@ in
 
       # Ensure terminal shells, including WezTerm, use remote Ollama.
       export OLLAMA_HOST="http://macpro:11434"
+
+      # Load local API secrets.
+      # This file is intentionally outside ~/dotfiles and is not versioned.
+      if [ -f "$HOME/.config/ai-secrets/env" ]; then
+        source ~/.config/ai-secrets/env
+      fi
     '';
 
     shellAliases = {
@@ -140,14 +146,24 @@ in
       ll = "eza -la";
       cat = "bat";
 
-      # AI
+      # AI coding agents
       cc = "claude --dangerously-skip-permissions";
       co = "codex --full-auto";
 
-      # Remote Ollama on macpro
+      # Remote Ollama on Mac Pro
       ol = "ollama";
       ol-list = "ollama list";
       ol-qwen = "ollama run qwen3.8-flash-next:125b-mlx";
+
+      # NVIDIA Build via Pi
+      pinvidia =
+        ''pi --model nvidia/nemotron-3-super-120b-a12b --api-key "$NVIDIA_API_KEY"'';
+
+      pinvidia-ultra =
+        ''pi --model nvidia/nemotron-3-ultra-550b-a55b --api-key "$NVIDIA_API_KEY"'';
+
+      pideepseek =
+        ''pi --model deepseek-ai/deepseek-v4-pro-0813 --api-key "$NVIDIA_API_KEY"'';
     };
   };
 
@@ -218,9 +234,8 @@ in
   # PI CODING AGENT
   # ============================================================
 
-  # Only stable, versioned Pi configuration lives in dotfiles.
-  # Pi manages its own runtime packages/cache in ~/.pi/agent/npm
-  # and ~/.pi/agent/git outside of Home Manager.
+  # Stable Pi config is versioned in dotfiles.
+  # Pi keeps runtime packages/cache in ~/.pi/agent/npm and ~/.pi/agent/git.
   home.file.".pi/agent/settings.json" = {
     source =
       config.lib.file.mkOutOfStoreSymlink
