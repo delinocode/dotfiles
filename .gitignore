@@ -19,3 +19,7 @@ result-*
 .no-mistakes/
 
 home/.pi/agent/auth.json
+
+
+# Private local API keys — never commit
+/secrets/

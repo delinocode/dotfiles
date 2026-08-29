@@ -120,10 +120,10 @@ in
       # Ensure terminal shells, including WezTerm, use remote Ollama.
       export OLLAMA_HOST="http://macpro:11434"
 
-      # Load local API secrets.
-      # This file is intentionally outside ~/dotfiles and is not versioned.
-      if [ -f "$HOME/.config/ai-secrets/env" ]; then
-        source ~/.config/ai-secrets/env
+      # Local API keys: kept in ~/dotfiles/secrets/env and ignored by Git.
+      # This is sourced at shell startup, not evaluated by Nix.
+      if [ -f "$HOME/dotfiles/secrets/env" ]; then
+        source "$HOME/dotfiles/secrets/env"
       fi
     '';
 
