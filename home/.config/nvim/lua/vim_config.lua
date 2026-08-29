@@ -1,13 +1,84 @@
 local o = vim.opt
-vim.g.mapleader = ' '          -- space is the leader key
-o.expandtab = true             -- spaces, not tabs
-o.shiftwidth = 2               -- 2 spaces per indent level
-o.number = true                -- absolute number on the cursor line, relative elsewhere
-o.relativenumber = true        -- relative line numbers for fast jumps
-o.ignorecase = true            -- search is case-insensitive by default
-o.smartcase = true             -- case-sensitive only if i type a capital
-o.clipboard = 'unnamedplus'    -- share the system clipboard
-o.scrolloff = 16               -- keep cursor away from the screen edge
-o.undofile = true              -- persistent undo across sessions
-o.mouse = ''                   -- no mouse in nvim; also lets Herdr keep host mouse capture off so Escape isn't swallowed
 
+-- ============================================================
+-- GENERAL
+-- ============================================================
+
+vim.g.mapleader = ' '
+vim.g.maplocalleader = ' '
+
+o.expandtab = true
+o.shiftwidth = 2
+o.tabstop = 2
+o.softtabstop = 2
+
+o.number = true
+o.relativenumber = true
+o.signcolumn = 'yes'
+
+o.ignorecase = true
+o.smartcase = true
+
+o.clipboard = 'unnamedplus'
+
+o.scrolloff = 8
+o.sidescrolloff = 8
+
+o.undofile = true
+
+o.termguicolors = true
+o.cursorline = true
+
+o.splitright = true
+o.splitbelow = true
+
+o.wrap = false
+
+o.updatetime = 250
+o.timeoutlen = 400
+
+o.completeopt = {
+  'menu',
+  'menuone',
+  'noselect',
+}
+
+o.mouse = 'a'
+
+-- Don't show mode twice because we use the statusline.
+o.showmode = false
+
+-- Better search UX
+o.hlsearch = true
+o.incsearch = true
+
+-- Keep sign column stable
+o.signcolumn = 'yes'
+
+-- Better command-line completion
+o.wildmenu = true
+
+-- Ask before destroying unsaved work
+o.confirm = true
+
+-- ============================================================
+-- DIAGNOSTICS
+-- ============================================================
+
+vim.diagnostic.config({
+  virtual_text = {
+    spacing = 2,
+  },
+
+  signs = true,
+  underline = true,
+
+  update_in_insert = false,
+
+  severity_sort = true,
+
+  float = {
+    border = 'rounded',
+    source = 'if_many',
+  },
+})

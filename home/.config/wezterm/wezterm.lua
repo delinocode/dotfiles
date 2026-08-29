@@ -10,8 +10,53 @@ config.macos_window_background_blur = 50
 config.hide_tab_bar_if_only_one_tab = true
 config.window_decorations = "RESIZE"
 
+-- Keyboard shortcuts
+config.keys = {
+	-- New tab
+	{
+		key = "t",
+		mods = "CMD",
+		action = wezterm.action.SpawnTab("CurrentPaneDomain"),
+	},
+
+	-- New window
+	{
+		key = "n",
+		mods = "CMD",
+		action = wezterm.action.SpawnWindow,
+	},
+
+	-- Close current tab/pane
+	{
+		key = "w",
+		mods = "CMD",
+		action = wezterm.action.CloseCurrentPane({ confirm = true }),
+	},
+
+	-- Close current window
+	{
+		key = "w",
+		mods = "CMD|SHIFT",
+		action = wezterm.action.CloseCurrentPane({ confirm = true }),
+	},
+}
+
+-- Move window with CMD + left mouse drag
+config.mouse_bindings = {
+	{
+		event = { Down = { streak = 1, button = "Left" } },
+		mods = "CMD",
+		action = wezterm.action.StartWindowDrag,
+	},
+}
+
 -- Dim unfocused windows so the focused one is obvious at a glance.
-local UNFOCUSED_FOREGROUND_TEXT_HSB = { hue = 1.0, saturation = 0.25, brightness = 0.45 }
+local UNFOCUSED_FOREGROUND_TEXT_HSB = {
+	hue = 1.0,
+	saturation = 0.25,
+	brightness = 0.45,
+}
+
 local UNFOCUSED_WINDOW_BACKGROUND_OPACITY = 0.62
 
 -- get_config_overrides() hands back a copy, so the current value is never the
@@ -20,6 +65,7 @@ local function same_text_hsb(actual, expected)
 	if actual == nil or expected == nil then
 		return actual == expected
 	end
+
 	return actual.hue == expected.hue
 		and actual.saturation == expected.saturation
 		and actual.brightness == expected.brightness
@@ -28,6 +74,7 @@ end
 wezterm.on("window-focus-changed", function(window)
 	local overrides = window:get_config_overrides() or {}
 	local text_hsb, opacity
+
 	if not window:is_focused() then
 		text_hsb = UNFOCUSED_FOREGROUND_TEXT_HSB
 		opacity = UNFOCUSED_WINDOW_BACKGROUND_OPACITY
@@ -45,3 +92,4 @@ wezterm.on("window-focus-changed", function(window)
 end)
 
 return config
+

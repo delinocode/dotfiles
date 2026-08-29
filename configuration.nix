@@ -34,8 +34,15 @@
     onActivation.cleanup = "zap";  # remove anything not listed here
     onActivation.autoUpdate = true;
     onActivation.extraFlags = [ "--force" ];
+    taps = [
+      {
+        name = "jundot/omlx";
+        clone_target = "https://github.com/jundot/omlx";
+      }
+    ];
     brews = [
       "herdr"
+      "jundot/omlx/omlx"
     ];
     casks = [
       "wezterm"
