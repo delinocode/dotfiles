@@ -84,6 +84,7 @@ in
 
     # AI agents
     pi-coding-agent
+    opencode
 
     # Fonts
     nerd-fonts.hack
@@ -256,6 +257,13 @@ in
     source =
       config.lib.file.mkOutOfStoreSymlink
         "${dotfiles}/home/AGENTS.md";
+    force = true;
+  };
+
+  home.file.".config/opencode/opencode.json" = {
+    source =
+      config.lib.file.mkOutOfStoreSymlink
+        "${dotfiles}/home/.config/opencode/opencode.json";
     force = true;
   };
 }

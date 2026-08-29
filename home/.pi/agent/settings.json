@@ -13,6 +13,7 @@
   "collapseChangelog": true,
   "packages": [],
   "lastChangelogVersion": "0.75.4",
-  "defaultProvider": "macbook-omlx",
-  "defaultModel": "Qwen3.8-27B-4bit"
+  "defaultProvider": "huggingface",
+  "defaultModel": "deepseek-ai/DeepSeek-V4-Pro",
+  "defaultThinkingLevel": "medium"
 }
