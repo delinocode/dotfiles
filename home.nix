@@ -53,6 +53,7 @@ in
     # JavaScript / TypeScript
     nodejs
     prettier
+    bun
 
     # Go
     go
