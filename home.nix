@@ -29,6 +29,7 @@ in
     unzip
     zip
     ollama
+    tmux
 
     # Git
     git
@@ -151,7 +152,7 @@ in
 
       # Existing coding agents
       cc = "claude --dangerously-skip-permissions";
-      co = "codex --full-auto";
+      oc = "opencode";
 
       # ============================================================
       # DIRECT OLLAMA SERVERS VIA TAILSCALE
@@ -166,12 +167,12 @@ in
       # macpro: Apple Silicon / 128 GB (DIRECT)
       ol-macpro = ''OLLAMA_HOST="http://macpro:11434" ollama'';
       cc-macpro = ''OLLAMA_HOST="http://macpro:11434" ollama launch claude'';
-      co-macpro = ''OLLAMA_HOST="http://macpro:11434" ollama launch opencode'';
+      oc-macpro = ''OLLAMA_HOST="http://macpro:11434" ollama launch opencode'';
 
       # Taichi: Ubuntu / 2× RTX 3090 (DIRECT)
       ol-taichi = ''OLLAMA_HOST="http://taichi:11434" ollama'';
       cc-taichi = ''OLLAMA_HOST="http://taichi:11434" ollama launch claude'';
-      co-taichi = ''OLLAMA_HOST="http://taichi:11434" ollama launch opencode'';
+      oc-taichi = ''OLLAMA_HOST="http://taichi:11434" ollama launch opencode'';
 
       # ============================================================
       # CLAUDE DESKTOP VIA OLLAMA + SSH TUNNELS
@@ -241,6 +242,71 @@ in
 
       pideepseek =
         ''pi --model deepseek-ai/deepseek-v4-pro-0813 --api-key "$NVIDIA_API_KEY"'';
+
+      # ============================================================
+      # PERSISTENT AGENTS VIA TMUX (ALWAYS ACCESSIBLE FROM SAMSUNG)
+      #
+      # Start/open a session:
+      #   tnew app-dev
+      #   tnew claude-taichi
+      #   tnew oc-taichi
+      #
+      # From Samsung:
+      #   tmls
+      #   tm app-dev
+      #
+      # Inside tmux:
+      #   Ctrl+b, then d = detach without stopping processes
+      # ============================================================
+
+      # Claude Code + macpro backend.
+      cc-tmux-macpro =
+        ''tmux new-session -A -s claude-macpro "OLLAMA_HOST=http://macpro:11434 ollama launch claude"'';
+
+      # Claude Code + Taichi backend.
+      cc-tmux-taichi =
+        ''tmux new-session -A -s claude-taichi "OLLAMA_HOST=http://taichi:11434 ollama launch claude"'';
+
+      # OpenCode + macpro backend.
+      oc-tmux-macpro =
+        ''tmux new-session -A -s opencode-macpro "OLLAMA_HOST=http://macpro:11434 ollama launch opencode"'';
+
+      # OpenCode + Taichi backend.
+      oc-tmux-taichi =
+        ''tmux new-session -A -s opencode-taichi "OLLAMA_HOST=http://taichi:11434 ollama launch opencode"'';
+
+      # Create a named tmux session, or attach if it already exists.
+      # Usage: tnew <session-name>
+      tnew = "tmux new-session -A -s";
+
+      # List all persistent tmux sessions.
+      tmls = "tmux ls";
+
+      # Take a named tmux session on this terminal.
+      # Detaches the session from another terminal first.
+      # Usage: tm <session-name>
+      tm = "tmux attach-session -d -t";
+
+      # Attach without taking the session away from another terminal.
+      # Use this mainly for observation.
+      # Usage: tmwatch <session-name>
+      tmwatch = "tmux attach-session -t";
+
+      # Kill a session and all programs running inside it.
+      # Usage: tkill <session-name>
+      tkill = "tmux kill-session -t";
+
+      # Print the name of the current tmux session.
+      tname = "tmux display-message -p '#S'";
+
+      # List all tmux windows/tabs across all sessions.
+      twindows = "tmux list-windows -a";
+
+      # List clients attached to tmux sessions.
+      tclients = "tmux list-clients";
+
+      # Reload a future ~/.tmux.conf configuration file.
+      treload = "tmux source-file ~/.tmux.conf";
     };
   };
 
