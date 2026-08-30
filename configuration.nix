@@ -47,6 +47,8 @@
     casks = [
       "wezterm"
       "claude-code"
+      "claude"
+      "ollama"
     ];
   };
 }

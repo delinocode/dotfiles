@@ -101,8 +101,8 @@ in
     VISUAL = "nvim";
     PAGER = "less";
 
-    # Default Ollama server: MacBook Pro 128 GB via Tailscale.
-    # Use ol-taichi / cc-taichi / co-taichi for Taichi explicitly.
+    # Default Ollama server for your shell and existing applications.
+    # This remains your direct Tailscale connection to macpro.
     OLLAMA_HOST = "http://macpro:11434";
   };
 
@@ -118,7 +118,8 @@ in
     initContent = ''
       bindkey '^f' autosuggest-accept
 
-      # Default Ollama server: MacBook Pro 128 GB.
+      # Default Ollama server: MacBook Pro 128 GB via Tailscale.
+      # This keeps your existing application behavior unchanged.
       export OLLAMA_HOST="http://macpro:11434"
 
       # API keys are local, outside the Nix store and ignored by Git.
@@ -129,6 +130,7 @@ in
     '';
 
     shellAliases = {
+      # Navigation
       ".." = "cd ..";
 
       # Git
@@ -152,32 +154,85 @@ in
       co = "codex --full-auto";
 
       # ============================================================
-      # REMOTE OLLAMA SERVERS VIA TAILSCALE
-      # These aliases select a SERVER, not a fixed model.
+      # DIRECT OLLAMA SERVERS VIA TAILSCALE
+      #
+      # These do not require SSH tunnels and keep your workflow intact.
       # ============================================================
 
-      # Default Ollama server: MacBook Pro 128 GB
+      # Default Ollama server: macpro, inherited from OLLAMA_HOST.
       ol = "ollama";
       ol-list = "ollama list";
 
-      # MacBook Pro 128 GB server
+      # macpro: Apple Silicon / 128 GB (DIRECT)
       ol-macpro = ''OLLAMA_HOST="http://macpro:11434" ollama'';
       cc-macpro = ''OLLAMA_HOST="http://macpro:11434" ollama launch claude'';
       co-macpro = ''OLLAMA_HOST="http://macpro:11434" ollama launch opencode'';
 
-      # Taichi: Ubuntu server with 2x RTX 3090
+      # Taichi: Ubuntu / 2× RTX 3090 (DIRECT)
       ol-taichi = ''OLLAMA_HOST="http://taichi:11434" ollama'';
       cc-taichi = ''OLLAMA_HOST="http://taichi:11434" ollama launch claude'';
       co-taichi = ''OLLAMA_HOST="http://taichi:11434" ollama launch opencode'';
 
       # ============================================================
-      # NVIDIA BUILD / NIM VIA PI
-      # Model choice is done interactively inside Pi: /model or Ctrl+L.
+      # CLAUDE DESKTOP VIA OLLAMA + SSH TUNNELS
+      #
+      # 127.0.0.1:11434 -> local Ollama app/models
+      # 127.0.0.1:12435 -> macpro:11434 (SSH user: maclino)
+      # 127.0.0.1:11436 -> taichi:11434 (SSH user: delai)
+      #
+      # These do not alter global OLLAMA_HOST or your existing app.
       # ============================================================
 
+      # Start both remote Ollama tunnels in the background.
+      #
+      # -f = background after authentication
+      # -N = tunnel only, no interactive shell
+      # -L = local address:port -> remote host:port
+      ol-tunnels = ''
+        ssh -fN -L 127.0.0.1:12435:localhost:11434 maclino@macpro
+        ssh -fN -L 127.0.0.1:11436:localhost:11434 delai@taichi
+      '';
+
+      # Stop only these two exact SSH tunnels.
+      ol-stop-tunnels = ''
+        pkill -f "ssh -fN -L 127.0.0.1:12435:localhost:11434 maclino@macpro" || true
+        pkill -f "ssh -fN -L 127.0.0.1:11436:localhost:11434 delai@taichi" || true
+      '';
+
+      # Inspect models from each source.
+      ol-local = ''OLLAMA_HOST="http://127.0.0.1:11434" ollama'';
+      ol-tunnel-macpro = ''OLLAMA_HOST="http://127.0.0.1:12435" ollama'';
+      ol-tunnel-taichi = ''OLLAMA_HOST="http://127.0.0.1:11436" ollama'';
+
+      # Claude Desktop -> models installed locally on this Mac.
+      claude-local = ''
+        launchctl setenv OLLAMA_HOST "http://127.0.0.1:11434"
+        killall Claude 2>/dev/null || true
+        open -a Claude
+      '';
+
+      # Claude Desktop -> macpro models, through the macpro SSH tunnel.
+      claude-macpro = ''
+        launchctl setenv OLLAMA_HOST "http://127.0.0.1:12435"
+        killall Claude 2>/dev/null || true
+        open -a Claude
+      '';
+
+      # Claude Desktop -> Taichi models, through the Taichi SSH tunnel.
+      claude-taichi = ''
+        launchctl setenv OLLAMA_HOST "http://127.0.0.1:11436"
+        killall Claude 2>/dev/null || true
+        open -a Claude
+      '';
+
+      # ============================================================
+      # NVIDIA BUILD / NIM VIA PI
+      # ============================================================
+
+      # Choose a model interactively in Pi with /model or Ctrl+L.
       pi-nvidia = ''pi --api-key "$NVIDIA_API_KEY"'';
 
-      # Optional shortcuts that explicitly choose a cloud model.
+      # Explicit NVIDIA cloud model shortcuts.
       pinvidia =
         ''pi --model nvidia/nemotron-3-super-120b-a12b --api-key "$NVIDIA_API_KEY"'';
 
@@ -256,8 +311,6 @@ in
   # PI CODING AGENT
   # ============================================================
 
-  # Stable Pi config is versioned in dotfiles.
-  # Pi keeps runtime packages/cache in ~/.pi/agent/npm and ~/.pi/agent/git.
   home.file.".pi/agent/settings.json" = {
     source =
       config.lib.file.mkOutOfStoreSymlink
