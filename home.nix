@@ -170,17 +170,44 @@ in
       cc-macpro = ''OLLAMA_HOST="http://macpro:11434" ollama launch claude'';
       oc-macpro = ''OLLAMA_HOST="http://macpro:11434" ollama launch opencode'';
 
-      # Taichi: Ubuntu / 2× RTX 3090 (DIRECT)
+      # Taichi: Ubuntu / 2×³ RTX 3090 (DIRECT)
       ol-taichi = ''OLLAMA_HOST="http://taichi:11434" ollama'';
       cc-taichi = ''OLLAMA_HOST="http://taichi:11434" ollama launch claude'';
       oc-taichi = ''OLLAMA_HOST="http://taichi:11434" ollama launch opencode'';
 
       # ============================================================
-      # CLAUDE DESKTOP VIA OLLAMA + SSH TUNNELS
+      # MLX SERVE ON MACPRO VIA TAILSCALE (PORT 11234)
+      #
+      # These use the MLX Serve API (Ollama-compatible) on macpro.
+      # No SSH tunnels; direct Tailscale/MagicDNS.
+      # ============================================================
+
+      # MLX Serve endpoint on macpro.
+      ol-mlx-macpro =
+        ''OLLAMA_HOST="http://macpro:11234" ollama'';
+
+      # Claude Code through MLX Serve on macpro.
+      cc-mlx-macpro =
+        ''OLLAMA_HOST="http://macpro:11234" ollama launch claude'';
+
+      # OpenCode through MLX Serve on macpro.
+      oc-mlx-macpro =
+        ''OLLAMA_HOST="http://macpro:11234" ollama launch opencode'';
+
+      # Persistent tmux sessions with MLX Serve backend.
+      cc-tmux-mlx-macpro =
+        ''tmux new-session -A -s claude-mlx-macpro "OLLAMA_HOST=http://macpro:11234 ollama launch claude"'';
+
+      oc-tmux-mlx-macpro =
+        ''tmux new-session -A -s opencode-mlx-macpro "OLLAMA_HOST=http://macpro:11234 ollama launch opencode"'';
+
+      # ============================================================
+      # CLAUDE DESKTOP VIA OLLAMA + SSH TUNNELS + MLX SERVE
       #
       # 127.0.0.1:11434 -> local Ollama app/models
       # 127.0.0.1:12435 -> macpro:11434 (SSH user: maclino)
       # 127.0.0.1:11436 -> taichi:11434 (SSH user: delai)
+      # macpro:11234     -> MLX Serve on macpro (direct Tailscale)
       #
       # These do not alter global OLLAMA_HOST or your existing app.
       # ============================================================
@@ -227,6 +254,13 @@ in
         open -a Claude
       '';
 
+      # Claude Desktop -> MLX Serve on macpro via Tailscale.
+      claude-mlx-macpro = ''
+        launchctl setenv OLLAMA_HOST "http://macpro:11234"
+        killall Claude 2>/dev/null || true
+        open -a Claude
+      '';
+
       # ============================================================
       # NVIDIA BUILD / NIM VIA PI
       # ============================================================
@@ -260,7 +294,7 @@ in
       #   Ctrl+b, then d = detach without stopping processes
       # ============================================================
 
-      # Claude Code + macpro backend.
+      # Claude Code + macpro backend (Ollama native).
       cc-tmux-macpro =
         ''tmux new-session -A -s claude-macpro "OLLAMA_HOST=http://macpro:11434 ollama launch claude"'';
 
@@ -268,7 +302,7 @@ in
       cc-tmux-taichi =
         ''tmux new-session -A -s claude-taichi "OLLAMA_HOST=http://taichi:11434 ollama launch claude"'';
 
-      # OpenCode + macpro backend.
+      # OpenCode + macpro backend (Ollama native).
       oc-tmux-macpro =
         ''tmux new-session -A -s opencode-macpro "OLLAMA_HOST=http://macpro:11434 ollama launch opencode"'';
 

@@ -5,16 +5,16 @@
 - [1. Alias Zsh](#1-alias-zsh)
   - [1.1 Navigation](#11-navigation)
   - [1.2 Git](#12-git)
-  - [1.3 Éditeur](#13- éditeur)
+  - [1.3 Éditeur](#13-éditeur)
   - [1.4 Fichiers](#14-fichiers)
   - [1.5 Ollama — serveurs directs via Tailscale](#15-ollama--serveurs-directs-via-tailscale)
   - [1.5.1 MLX Serve sur macpro](#151-mlx-serve-sur-macpro)
-  - [1.6 Claude Desktop via Ollama + tunnels SSH + MLX Serve](#16-claude-desktop-via-ollama--tunnels-ssh--mlx-serve)
+  - [1.6 Claude Desktop via Ollama + tunnels SSH](#16-claude-desktop-via-ollama--tunnels-ssh)
   - [1.7 NVIDIA Build / NIM via Pi](#17-nvidia-build--nim-via-pi)
 - [2. Agents sans tmux](#2-agents-sans-tmux)
 - [3. Agents avec tmux](#3-agents-avec-tmux)
   - [3.1 Lancer un agent persistant](#31-lancer-un-agent-persistant)
-  - [3.2 G gérer les sessions tmux](#32-g rer-les-sessions-tmux)
+  - [3.2 Gérer les sessions tmux](#32-gérer-les-sessions-tmux)
 - [4. Raccourcis clavier tmux](#4-raccourcis-clavier-tmux)
 - [5. Raccourcis clavier WezTerm](#5-raccourcis-clavier-wezterm)
 - [6. Raccourcis clavier Neovim](#6-raccourcis-clavier-neovim)
@@ -37,14 +37,14 @@
 
 | Alias | Commande | Description |
 |---|---|---|
-| `add` | `git add .` | Ajoute tous les fichiers modifi s au staging. |
+| `add` | `git add .` | Ajoute tous les fichiers modifiés au staging. |
 | `push` | `git push` | Pousse les commits vers le remote. |
 | `pull` | `git pull` | Tire les changements depuis le remote. |
-| `gs` | `git status` | Affiche l' tat du d p t Git. |
+| `gs` | `git status` | Affiche l'état du dépôt Git. |
 | `lg` | `lazygit` | Ouvre l'interface Lazygit. |
 | `m` | `git switch main` | Bascule sur la branche `main`. |
 
-### 1.3 diteur
+### 1.3 Éditeur
 
 | Alias | Commande | Description |
 |---|---|---|
@@ -55,41 +55,41 @@
 
 | Alias | Commande | Description |
 |---|---|---|
-| `ll` | `eza -la` | Liste les fichiers en d tail. |
+| `ll` | `eza -la` | Liste les fichiers en détail. |
 | `cat` | `bat` | Affiche un fichier avec coloration syntaxique. |
 
 ### 1.5 Ollama — serveurs directs via Tailscale
 
-Ces commandes ne n cessitent pas de tunnel SSH et gardent ton workflow intact.
+Ces commandes ne nécessitent pas de tunnel SSH et gardent ton workflow intact.
 
 | Alias | Commande | Description |
 |---|---|---|
-| `ol` | `ollama` | Serveur Ollama par d faut, h rit  de `OLLAMA_HOST` (macpro). |
-| `ol-list` | `ollama list` | Liste les mod les du serveur par d faut. |
+| `ol` | `ollama` | Serveur Ollama par défaut, hérité de `OLLAMA_HOST` (macpro). |
+| `ol-list` | `ollama list` | Liste les modèles du serveur par défaut. |
 | `ol-macpro` | `OLLAMA_HOST="http://macpro:11434" ollama` | macpro — Apple Silicon / 128 Go de RAM, connexion directe. |
 | `cc-macpro` | `OLLAMA_HOST="http://macpro:11434" ollama launch claude` | Lance Claude via macpro, connexion directe. |
 | `oc-macpro` | `OLLAMA_HOST="http://macpro:11434" ollama launch opencode` | Lance OpenCode via macpro, connexion directe. |
-| `ol-taichi` | `OLLAMA_HOST="http://taichi:11434" ollama` | Taichi — Ubuntu / 2×³ RTX 3090, connexion directe. |
+| `ol-taichi` | `OLLAMA_HOST="http://taichi:11434" ollama` | Taichi — Ubuntu / 2× RTX 3090, connexion directe. |
 | `cc-taichi` | `OLLAMA_HOST="http://taichi:11434" ollama launch claude` | Lance Claude via Taichi, connexion directe. |
 | `oc-taichi` | `OLLAMA_HOST="http://taichi:11434" ollama launch opencode` | Lance OpenCode via Taichi, connexion directe. |
 
-#### G rer les mod les sur Taichi
+#### Gérer les modèles sur Taichi
 
 ```bash
-ol-taichi list                     # Mod les install s sur Taichi
-ol-taichi pull <nom-du-mod le>     # T l charger un mod le sur Taichi
-ol-taichi run <nom-du-mod le>      # Ex cuter un mod le sur Taichi
-ol-taichi rm <nom-du-mod le>       # Supprimer un mod le de Taichi
-ol-taichi ps                       # Mod les actuellement actifs
+ol-taichi list                     # Modèles installés sur Taichi
+ol-taichi pull <nom-du-modèle>     # Télécharger un modèle sur Taichi
+ol-taichi run <nom-du-modèle>      # Exécuter un modèle sur Taichi
+ol-taichi rm <nom-du-modèle>       # Supprimer un modèle de Taichi
+ol-taichi ps                       # Modèles actuellement actifs
 ```
 
 ### 1.5.1 MLX Serve sur macpro
 
-MLX Serve est un second serveur sur macpro, s par  d'Ollama natif. Il est accessible directement via Tailscale / MagicDNS  `http://macpro:11234` et pr sente une API compatible Ollama.
+MLX Serve est un second serveur sur macpro, séparé d'Ollama natif. Il est accessible directement via Tailscale / MagicDNS à `http://macpro:11234` et présente une API compatible Ollama.
 
 - Ollama natif sur macpro : `http://macpro:11434`
 - MLX Serve sur macpro : `http://macpro:11234`
-- Aucun tunnel SSH n'est n cessaire pour MLX Serve.
+- Aucun tunnel SSH n'est nécessaire pour MLX Serve.
 
 | Alias | Commande | Description |
 |---|---|---|
@@ -97,15 +97,15 @@ MLX Serve est un second serveur sur macpro, s par  d'Ollama natif. Il est access
 | `cc-mlx-macpro` | `OLLAMA_HOST="http://macpro:11234" ollama launch claude` | Lance Claude Code avec MLX Serve sur macpro. |
 | `oc-mlx-macpro` | `OLLAMA_HOST="http://macpro:11234" ollama launch opencode` | Lance OpenCode avec MLX Serve sur macpro. |
 
-#### Mod les MLX Serve
+#### Modèles MLX Serve
 
 ```bash
-ol-mlx-macpro list                     # Liste les mod les servis par MLX Serve
-ol-mlx-macpro run <nom-du-mod le>      # Lance un mod le dans le terminal
-ol-mlx-macpro ps                       # Affiche les mod les actifs
+ol-mlx-macpro list                     # Liste les modèles servis par MLX Serve
+ol-mlx-macpro run <nom-du-modèle>      # Lance un modèle dans le terminal
+ol-mlx-macpro ps                       # Affiche les modèles actifs
 ```
 
-Mod les actuellement visibles via MLX Serve :
+Modèles actuellement visibles via MLX Serve :
 
 ```text
 ddalcu/Qwen3.8-Flash-Next-MLX-Serve-4bit:latest
@@ -126,38 +126,36 @@ ol-mlx-macpro run ddalcu/Qwen3.8-Flash-Next-MLX-Serve-4bit:latest
 | `cc-tmux-mlx-macpro` | `tmux new-session -A -s claude-mlx-macpro "OLLAMA_HOST=http://macpro:11234 ollama launch claude"` | Claude Code et MLX Serve dans une session tmux persistante. |
 | `oc-tmux-mlx-macpro` | `tmux new-session -A -s opencode-mlx-macpro "OLLAMA_HOST=http://macpro:11234 ollama launch opencode"` | OpenCode et MLX Serve dans une session tmux persistante. |
 
-Ces sessions restent actives apr s avoir ferm  WezTerm ou d connect  ton Samsung. D tache une session avec `Ctrl+b`, puis `d`.
+Ces sessions restent actives après avoir fermé WezTerm ou déconnecté ton Samsung. Détache une session avec `Ctrl+b`, puis `d`.
 
-### 1.6 Claude Desktop via Ollama + tunnels SSH + MLX Serve
+### 1.6 Claude Desktop via Ollama + tunnels SSH
 
 Mapping des ports :
 
-- `127.0.0.1:11434` → Ollama local, app/mod les sur ce Mac
+- `127.0.0.1:11434` → Ollama local, app/modèles sur ce Mac
 - `127.0.0.1:12435` → `macpro:11434`, utilisateur SSH `maclino`
 - `127.0.0.1:11436` → `taichi:11434`, utilisateur SSH `delai`
-- `macpro:11234` → MLX Serve sur macpro (direct Tailscale)
 
 Ces alias ne modifient pas `OLLAMA_HOST` global ni ton application existante.
 
 | Alias | Commande | Description |
 |---|---|---|
-| `ol-tunnels` | `ssh -fN -L 127.0.0.1:12435:localhost:11434 maclino@macpro` puis `ssh -fN -L 127.0.0.1:11436:localhost:11434 delai@taichi` | D marre les deux tunnels Ollama distants en arri re-plan. |
-| `ol-stop-tunnels` | Arr te les deux tunnels SSH d finis ci-dessus. | Arr te uniquement les tunnels Ollama macpro et Taichi. |
-| `ol-local` | `OLLAMA_HOST="http://127.0.0.1:11434" ollama` | Inspecte les mod les install s localement. |
-| `ol-tunnel-macpro` | `OLLAMA_HOST="http://127.0.0.1:12435" ollama` | Inspecte les mod les de macpro via le tunnel. |
-| `ol-tunnel-taichi` | `OLLAMA_HOST="http://127.0.0.1:11436" ollama` | Inspecte les mod les de Taichi via le tunnel. |
-| `claude-local` | D finit `OLLAMA_HOST` sur `127.0.0.1:11434`, tue puis relance Claude Desktop. | Claude Desktop → mod les install s localement sur ce Mac. |
-| `claude-macpro` | D finit `OLLAMA_HOST` sur `127.0.0.1:12435`, tue puis relance Claude Desktop. | Claude Desktop → mod les macpro, via le tunnel SSH macpro. |
-| `claude-taichi` | D finit `OLLAMA_HOST` sur `127.0.0.1:11436`, tue puis relance Claude Desktop. | Claude Desktop → mod les Taichi, via le tunnel SSH Taichi. |
-| `claude-mlx-macpro` | D finit `OLLAMA_HOST` sur `http://macpro:11234`, tue puis relance Claude Desktop. | Claude Desktop → MLX Serve sur macpro, via Tailscale. |
+| `ol-tunnels` | `ssh -fN -L 127.0.0.1:12435:localhost:11434 maclino@macpro` puis `ssh -fN -L 127.0.0.1:11436:localhost:11434 delai@taichi` | Démarre les deux tunnels Ollama distants en arrière-plan. |
+| `ol-stop-tunnels` | Arrête les deux tunnels SSH définis ci-dessus. | Arrête uniquement les tunnels Ollama macpro et Taichi. |
+| `ol-local` | `OLLAMA_HOST="http://127.0.0.1:11434" ollama` | Inspecte les modèles installés localement. |
+| `ol-tunnel-macpro` | `OLLAMA_HOST="http://127.0.0.1:12435" ollama` | Inspecte les modèles de macpro via le tunnel. |
+| `ol-tunnel-taichi` | `OLLAMA_HOST="http://127.0.0.1:11436" ollama` | Inspecte les modèles de Taichi via le tunnel. |
+| `claude-local` | Définit `OLLAMA_HOST` sur `127.0.0.1:11434`, tue puis relance Claude Desktop. | Claude Desktop → modèles installés localement sur ce Mac. |
+| `claude-macpro` | Définit `OLLAMA_HOST` sur `127.0.0.1:12435`, tue puis relance Claude Desktop. | Claude Desktop → modèles macpro, via le tunnel SSH macpro. |
+| `claude-taichi` | Définit `OLLAMA_HOST` sur `127.0.0.1:11436`, tue puis relance Claude Desktop. | Claude Desktop → modèles Taichi, via le tunnel SSH Taichi. |
 
 ### 1.7 NVIDIA Build / NIM via Pi
 
-Choix du mod le possible dans Pi avec `/model` ou `Ctrl+L`.
+Choix du modèle possible dans Pi avec `/model` ou `Ctrl+L`.
 
 | Alias | Commande | Description |
 |---|---|---|
-| `pi-nvidia` | `pi --api-key "$NVIDIA_API_KEY"` | Lance Pi avec la cl  API NVIDIA, choix de mod le interactif. |
+| `pi-nvidia` | `pi --api-key "$NVIDIA_API_KEY"` | Lance Pi avec la clé API NVIDIA, choix de modèle interactif. |
 | `pinvidia` | `pi --model nvidia/nemotron-3-super-120b-a12b --api-key "$NVIDIA_API_KEY"` | Raccourci explicite vers Nemotron 3 Super 120B-A12B. |
 | `pinvidia-ultra` | `pi --model nvidia/nemotron-3-ultra-550b-a55b --api-key "$NVIDIA_API_KEY"` | Raccourci explicite vers Nemotron 3 Ultra 550B-A55B. |
 | `pideepseek` | `pi --model deepseek-ai/deepseek-v4-pro-0813 --api-key "$NVIDIA_API_KEY"` | Raccourci explicite vers DeepSeek V4 Pro (0813). |
@@ -168,12 +166,12 @@ Choix du mod le possible dans Pi avec `/model` ou `Ctrl+L`.
 
 [↑ Sommaire](#sommaire)
 
-Ces alias lancent l'agent directement dans le terminal courant, sans le passer par tmux. Si tu fermes le terminal, l'onglet WezTerm ou la connexion SSH, l'agent s'arr te.
+Ces alias lancent l'agent directement dans le terminal courant, sans le passer par tmux. Si tu fermes le terminal, l'onglet WezTerm ou la connexion SSH, l'agent s'arrête.
 
 | Alias | Commande | Description |
 |---|---|---|
-| `cc` | `claude --dangerously-skip-permissions` | Agent de code existant, lanc  directement. |
-| `oc` | `opencode` | Agent de code existant, lanc  directement. |
+| `cc` | `claude --dangerously-skip-permissions` | Agent de code existant, lancé directement. |
+| `oc` | `opencode` | Agent de code existant, lancé directement. |
 | `cc-macpro` | `OLLAMA_HOST="http://macpro:11434" ollama launch claude` | Claude, backend Ollama natif macpro, direct dans le terminal. |
 | `oc-macpro` | `OLLAMA_HOST="http://macpro:11434" ollama launch opencode` | OpenCode, backend Ollama natif macpro, direct dans le terminal. |
 | `cc-mlx-macpro` | `OLLAMA_HOST="http://macpro:11234" ollama launch claude` | Claude, backend MLX Serve macpro, direct dans le terminal. |
@@ -188,9 +186,9 @@ Ces alias lancent l'agent directement dans le terminal courant, sans le passer p
 
 [↑ Sommaire](#sommaire)
 
-Les sessions tmux restent actives apr s une d connexion. Elles sont accessibles depuis ton Samsung apr s connexion SSH au MacBook Air.
+Les sessions tmux restent actives après une déconnexion. Elles sont accessibles depuis ton Samsung après connexion SSH au MacBook Air.
 
-Cr er ou ouvrir une session :
+Créer ou ouvrir une session :
 
 ```bash
 tnew app-dev
@@ -205,7 +203,7 @@ tmls
 tm app-dev
 ```
 
-Dans tmux, `Ctrl+b` puis `d` d tache sans arr ter les processus.
+Dans tmux, `Ctrl+b` puis `d` détache sans arrêter les processus.
 
 ### 3.1 Lancer un agent persistant
 
@@ -218,18 +216,18 @@ Dans tmux, `Ctrl+b` puis `d` d tache sans arr ter les processus.
 | `cc-tmux-taichi` | `tmux new-session -A -s claude-taichi "OLLAMA_HOST=http://taichi:11434 ollama launch claude"` | Claude Code + backend Taichi, dans tmux. |
 | `oc-tmux-taichi` | `tmux new-session -A -s opencode-taichi "OLLAMA_HOST=http://taichi:11434 ollama launch opencode"` | OpenCode + backend Taichi, dans tmux. |
 
-### 3.2 G rer les sessions tmux
+### 3.2 Gérer les sessions tmux
 
 | Alias | Commande | Description |
 |---|---|---|
-| `tnew` | `tmux new-session -A -s` | Cr e une session tmux nomm e, ou s'y attache si elle existe d j . Usage : `tnew <session-name>`. |
+| `tnew` | `tmux new-session -A -s` | Crée une session tmux nommée, ou s'y attache si elle existe déjà. Usage : `tnew <session-name>`. |
 | `tmls` | `tmux ls` | Liste toutes les sessions tmux persistantes. |
-| `tm` | `tmux attach-session -d -t` | Prend une session nomm e sur ce terminal ; la d tache d'un autre terminal d'abord. Usage : `tm <session-name>`. |
-| `tmwatch` | `tmux attach-session -t` | Attache sans retirer la session  un autre terminal. Pour observation. Usage : `tmwatch <session-name>`. |
+| `tm` | `tmux attach-session -d -t` | Prend une session nommée sur ce terminal ; la détache d'un autre terminal d'abord. Usage : `tm <session-name>`. |
+| `tmwatch` | `tmux attach-session -t` | Attache sans retirer la session à un autre terminal. Pour observation. Usage : `tmwatch <session-name>`. |
 | `tkill` | `tmux kill-session -t` | Tue une session et tous les programmes qui tournent dedans. Usage : `tkill <session-name>`. |
 | `tname` | `tmux display-message -p '#S'` | Affiche le nom de la session tmux courante. |
-| `twindows` | `tmux list-windows -a` | Liste toutes les fen tres/onglets tmux, toutes sessions confondues. |
-| `tclients` | `tmux list-clients` | Liste les clients attach s aux sessions tmux. |
+| `twindows` | `tmux list-windows -a` | Liste toutes les fenêtres/onglets tmux, toutes sessions confondues. |
+| `tclients` | `tmux list-clients` | Liste les clients attachés aux sessions tmux. |
 | `treload` | `tmux source-file ~/.tmux.conf` | Recharge une future config `~/.tmux.conf`. |
 
 ---
@@ -238,27 +236,27 @@ Dans tmux, `Ctrl+b` puis `d` d tache sans arr ter les processus.
 
 [↑ Sommaire](#sommaire)
 
-Pr fixe par d faut : `Ctrl+b`. Appuie sur `Ctrl+b`, rel che, puis appuie sur la touche indiqu e.
+Préfixe par défaut : `Ctrl+b`. Appuie sur `Ctrl+b`, relâche, puis appuie sur la touche indiquée.
 
 ### Sessions
 
 | Raccourci | Action |
 |---|---|
-| `Ctrl+b` puis `d` | D tache la session courante sans arr ter les processus. |
+| `Ctrl+b` puis `d` | Détache la session courante sans arrêter les processus. |
 | `Ctrl+b` puis `s` | Liste les sessions et permet d'en changer. |
 | `Ctrl+b` puis `$` | Renomme la session courante. |
 
-### Fen tres
+### Fenêtres
 
 | Raccourci | Action |
 |---|---|
-| `Ctrl+b` puis `c` | Cr e une nouvelle fen tre. |
-| `Ctrl+b` puis `n` | Fen tre suivante. |
-| `Ctrl+b` puis `p` | Fen tre pr c dente. |
-| `Ctrl+b` puis `0`   `9` | Va  la fen tre num ro indiqu . |
-| `Ctrl+b` puis `,` | Renomme la fen tre courante. |
-| `Ctrl+b` puis `&` | Ferme la fen tre courante, avec confirmation. |
-| `Ctrl+b` puis `w` | Liste les fen tres. |
+| `Ctrl+b` puis `c` | Crée une nouvelle fenêtre. |
+| `Ctrl+b` puis `n` | Fenêtre suivante. |
+| `Ctrl+b` puis `p` | Fenêtre précédente. |
+| `Ctrl+b` puis `0` à `9` | Va à la fenêtre numéro indiqué. |
+| `Ctrl+b` puis `,` | Renomme la fenêtre courante. |
+| `Ctrl+b` puis `&` | Ferme la fenêtre courante, avec confirmation. |
+| `Ctrl+b` puis `w` | Liste les fenêtres. |
 
 ### Panneaux
 
@@ -266,20 +264,20 @@ Pr fixe par d faut : `Ctrl+b`. Appuie sur `Ctrl+b`, rel che, puis appuie sur la 
 |---|---|
 | `Ctrl+b` puis `%` | Split vertical, gauche/droite. |
 | `Ctrl+b` puis `"` | Split horizontal, haut/bas. |
-| `Ctrl+b` puis fl che | Se d place vers le panneau dans cette direction. |
+| `Ctrl+b` puis flèche | Se déplace vers le panneau dans cette direction. |
 | `Ctrl+b` puis `x` | Ferme le panneau courant, avec confirmation. |
-| `Ctrl+b` puis `z` | Zoom/d zoom le panneau courant. |
-| `Ctrl+b` puis `q` | Affiche bri vement les num ros des panneaux. |
+| `Ctrl+b` puis `z` | Zoom/dézoom le panneau courant. |
+| `Ctrl+b` puis `q` | Affiche brièvement les numéros des panneaux. |
 
-### Copie et d filement
+### Copie et défilement
 
 | Raccourci | Action |
 |---|---|
-| `Ctrl+b` puis `[` | Entre en mode copie/d filement. |
+| `Ctrl+b` puis `[` | Entre en mode copie/défilement. |
 | `q` | Quitte le mode copie. |
-| `Espace` | D marre une s lection en mode copie. |
-| `Entr e` | Copie la s lection dans le buffer. |
-| `Ctrl+b` puis `]` | Colle le dernier buffer copi . |
+| `Espace` | Démarre une sélection en mode copie. |
+| `Entrée` | Copie la sélection dans le buffer. |
+| `Ctrl+b` puis `]` | Colle le dernier buffer copié. |
 
 ### Divers
 
@@ -294,30 +292,30 @@ Pr fixe par d faut : `Ctrl+b`. Appuie sur `Ctrl+b`, rel che, puis appuie sur la 
 
 [↑ Sommaire](#sommaire)
 
-### Fen tres et onglets
+### Fenêtres et onglets
 
 | Raccourci | Action |
 |---|---|
 | `CMD+t` | Nouvel onglet. |
-| `CMD+n` | Nouvelle fen tre. |
+| `CMD+n` | Nouvelle fenêtre. |
 | `CMD+w` | Ferme l'onglet/panneau courant, avec confirmation. |
-| `CMD+Shift+w` | Ferme la fen tre courante, avec confirmation. |
+| `CMD+Shift+w` | Ferme la fenêtre courante, avec confirmation. |
 
 ### Souris
 
 | Raccourci | Action |
 |---|---|
-| `CMD` + clic gauche + glisser | D place la fen tre WezTerm. |
+| `CMD` + clic gauche + glisser | Déplace la fenêtre WezTerm. |
 
 ### Apparence
 
-- Th me : `rose-pine-moon`
+- Thème : `rose-pine-moon`
 - Police : `Hack Nerd Font`, taille 15
-- Opacit  du fond : 0.8
+- Opacité du fond : 0.8
 - Flou du fond sur macOS : 50
-- Barre d'onglets masqu e s'il n'y a qu'un seul onglet
-- D corations de fen tre : `RESIZE` uniquement
-- Fen tre non focalis e : texte assombri et opacit  r duite pour rep rer la fen tre active.
+- Barre d'onglets masquée s'il n'y a qu'un seul onglet
+- Décorations de fenêtre : `RESIZE` uniquement
+- Fenêtre non focalisée : texte assombri et opacité réduite pour repérer la fenêtre active.
 
 ---
 
@@ -329,10 +327,10 @@ Pr fixe par d faut : `Ctrl+b`. Appuie sur `Ctrl+b`, rel che, puis appuie sur la 
 
 | Raccourci | Mode | Action |
 |---|---|---|
-| ` chap` | Normal | Sauvegarde (`:update`). |
+| `Échap` | Normal | Sauvegarde (`:update`). |
 | `Ctrl+s` | Normal, Insertion, Visuel | Sauvegarde (`:update`). |
-| `Ctrl+a` | Normal | S lectionne tout (`ggVG`). |
-| `p` sur une s lection | Visuel | Colle sans perdre le contenu du clipboard. |
+| `Ctrl+a` | Normal | Sélectionne tout (`ggVG`). |
+| `p` sur une sélection | Visuel | Colle sans perdre le contenu du clipboard. |
 
 ### Fichiers / buffers
 
@@ -342,16 +340,16 @@ Pr fixe par d faut : `Ctrl+b`. Appuie sur `Ctrl+b`, rel che, puis appuie sur la 
 | `<leader>q` | Normal | Quitte (`:quit`). |
 | `<leader>x` | Normal | Ferme le buffer (`:bdelete`). |
 | `<leader>bn` | Normal | Buffer suivant (`:bnext`). |
-| `<leader>bp` | Normal | Buffer pr c dent (`:bprevious`). |
+| `<leader>bp` | Normal | Buffer précédent (`:bprevious`). |
 
-### Fen tres
+### Fenêtres
 
 | Raccourci | Mode | Action |
 |---|---|---|
-| `Ctrl+h` | Normal | Se d place vers la fen tre de gauche. |
-| `Ctrl+l` | Normal | Se d place vers la fen tre de droite. |
-| `Ctrl+j` | Normal | Se d place vers la fen tre du bas. |
-| `Ctrl+k` | Normal | Se d place vers la fen tre du haut. |
+| `Ctrl+h` | Normal | Se déplace vers la fenêtre de gauche. |
+| `Ctrl+l` | Normal | Se déplace vers la fenêtre de droite. |
+| `Ctrl+j` | Normal | Se déplace vers la fenêtre du bas. |
+| `Ctrl+k` | Normal | Se déplace vers la fenêtre du haut. |
 | `<leader>sv` | Normal | Split vertical (`:vsplit`). |
 | `<leader>sh` | Normal | Split horizontal (`:split`). |
 | `<leader>sx` | Normal | Ferme le split (`:close`). |
@@ -360,15 +358,15 @@ Pr fixe par d faut : `Ctrl+b`. Appuie sur `Ctrl+b`, rel che, puis appuie sur la 
 
 | Raccourci | Mode | Action |
 |---|---|---|
-| `gd` | Normal | Va  la d finition. |
-| `gD` | Normal | Va  la d claration. |
-| `gr` | Normal | R f rences. |
-| `gi` | Normal | Va  l'impl mentation. |
+| `gd` | Normal | Va à la définition. |
+| `gD` | Normal | Va à la déclaration. |
+| `gr` | Normal | Références. |
+| `gi` | Normal | Va à l'implémentation. |
 | `K` | Normal | Documentation au survol. |
 | `<leader>rn` | Normal | Renomme le symbole. |
 | `<leader>ca` | Normal, Visuel | Actions de code. |
 | `<leader>ld` | Normal | Diagnostics de la ligne. |
-| `[d` | Normal | Diagnostic pr c dent. |
+| `[d` | Normal | Diagnostic précédent. |
 | `]d` | Normal | Diagnostic suivant. |
 
 ### Terminal
@@ -383,69 +381,69 @@ Pr fixe par d faut : `Ctrl+b`. Appuie sur `Ctrl+b`, rel che, puis appuie sur la 
 
 [↑ Sommaire](#sommaire)
 
-### Applications et fen tres
+### Applications et fenêtres
 
 | Raccourci | Action |
 |---|---|
 | `CMD+Espace` | Ouvre Spotlight. |
-| `CMD+Tab` | Passe  l'application suivante. |
-| `CMD+Shift+Tab` | Passe  l'application pr c dente. |
-| `CMD+W` | Ferme la fen tre ou l'onglet actif. |
+| `CMD+Tab` | Passe à l'application suivante. |
+| `CMD+Shift+Tab` | Passe à l'application précédente. |
+| `CMD+W` | Ferme la fenêtre ou l'onglet actif. |
 | `CMD+Q` | Quitte l'application active. |
 | `CMD+H` | Masque l'application active. |
 | `CMD+Option+H` | Masque toutes les autres applications. |
-| `CMD+M` | R duit la fen tre active dans le Dock. |
-| `CMD+Option+M` | R duit toutes les fen tres de l'application active. |
-| `Ctrl+Fl che bas` | Mission Control. |
-| `Ctrl+Fl che haut` | Affiche les fen tres de l'application active. |
-| `Ctrl+Fl che gauche/droite` | Change d'espace (bureau). |
-| `Ctrl+CMD+F` | Active ou quitte le plein cran. |
+| `CMD+M` | Réduit la fenêtre active dans le Dock. |
+| `CMD+Option+M` | Réduit toutes les fenêtres de l'application active. |
+| `Ctrl+Flèche bas` | Mission Control. |
+| `Ctrl+Flèche haut` | Affiche les fenêtres de l'application active. |
+| `Ctrl+Flèche gauche/droite` | Change d'espace (bureau). |
+| `Ctrl+CMD+F` | Active ou quitte le plein écran. |
 
 ### Navigation clavier
 
 | Raccourci | Action |
 |---|---|
-| `Tab` | Contr le suivant. |
-| `Shift+Tab` | Contr le pr c dent. |
-| `Espace` | Active le contr le s lectionn . |
-| `Entr e` | Valide l'action ou ouvre l' l ment s lectionn . |
-| ` chap` | Annule ou ferme le menu ou la bo te de dialogue. |
+| `Tab` | Contrôle suivant. |
+| `Shift+Tab` | Contrôle précédent. |
+| `Espace` | Active le contrôle sélectionné. |
+| `Entrée` | Valide l'action ou ouvre l'élément sélectionné. |
+| `Échap` | Annule ou ferme le menu ou la boîte de dialogue. |
 | `Ctrl+F2` | Focus sur la barre des menus. |
 | `Ctrl+F3` | Focus sur le Dock. |
-| `Ctrl+F4` | Fen tre suivante de l'application active. |
-| `Ctrl+F7` | Active ou d sactive la navigation compl te au clavier. |
+| `Ctrl+F4` | Fenêtre suivante de l'application active. |
+| `Ctrl+F7` | Active ou désactive la navigation complète au clavier. |
 | `Ctrl+F8` | Focus sur les menus de statut. |
 
-> Sur MacBook, ajoute `Fn` aux touches `F1`   `F12` selon les r glages clavier.
+> Sur MacBook, ajoute `Fn` aux touches `F1` à `F12` selon les réglages clavier.
 
 ### Finder et fichiers
 
 | Raccourci | Action |
 |---|---|
-| `CMD+N` | Nouvelle fen tre Finder. |
+| `CMD+N` | Nouvelle fenêtre Finder. |
 | `CMD+T` | Nouvel onglet Finder. |
-| `CMD+Fl che haut` | Dossier parent. |
-| `CMD+Fl che bas` | Ouvre le fichier ou dossier s lectionn . |
-| `CMD+[` | Emplacement pr c dent. |
+| `CMD+Flèche haut` | Dossier parent. |
+| `CMD+Flèche bas` | Ouvre le fichier ou dossier sélectionné. |
+| `CMD+[` | Emplacement précédent. |
 | `CMD+]` | Emplacement suivant. |
 | `CMD+Shift+G` | Aller au dossier. |
 | `CMD+Shift+H` | Dossier personnel. |
 | `CMD+Shift+D` | Bureau. |
 | `CMD+Shift+O` | Documents. |
 | `CMD+Shift+U` | Utilitaires. |
-| `CMD+Shift+.` | Affiche ou masque les fichiers cach s. |
-| `Espace` | Aper u rapide. |
-| `Entr e` | Renomme l' l ment s lectionn . |
-| `CMD+Suppr` | Envoie  la Corbeille. |
+| `CMD+Shift+.` | Affiche ou masque les fichiers cachés. |
+| `Espace` | Aperçu rapide. |
+| `Entrée` | Renomme l'élément sélectionné. |
+| `CMD+Suppr` | Envoie à la Corbeille. |
 | `CMD+Shift+Suppr` | Vide la Corbeille, avec confirmation. |
-| `CMD+D` | Duplique l' l ment. |
-| `CMD+I` | Informations sur l' l ment. |
-| `CMD+1` | Vue en ic nes. |
+| `CMD+D` | Duplique l'élément. |
+| `CMD+I` | Informations sur l'élément. |
+| `CMD+1` | Vue en icônes. |
 | `CMD+2` | Vue en liste. |
 | `CMD+3` | Vue en colonnes. |
 | `CMD+4` | Vue en galerie. |
 
-### dition de texte
+### Édition de texte
 
 | Raccourci | Action |
 |---|---|
@@ -453,29 +451,29 @@ Pr fixe par d faut : `Ctrl+b`. Appuie sur `Ctrl+b`, rel che, puis appuie sur la 
 | `CMD+X` | Coupe. |
 | `CMD+V` | Colle. |
 | `CMD+Z` | Annule. |
-| `CMD+Shift+Z` | R tablit. |
-| `CMD+A` | S lectionne tout. |
+| `CMD+Shift+Z` | Rétablit. |
+| `CMD+A` | Sélectionne tout. |
 | `CMD+F` | Recherche. |
-| `CMD+G` | R sultat suivant. |
-| `CMD+Shift+G` | R sultat pr c dent. |
+| `CMD+G` | Résultat suivant. |
+| `CMD+Shift+G` | Résultat précédent. |
 | `CMD+S` | Enregistre. |
 | `CMD+P` | Imprime. |
-| `CMD+Fl che gauche/droite` | D but ou fin de ligne. |
-| `Option+Fl che gauche/droite` | D place le curseur d'un mot. |
-| `Shift+Fl che` | tend la s lection. |
-| `Option+Shift+Fl che gauche/droite` | tend la s lection d'un mot. |
-| `CMD+Shift+Fl che gauche/droite` | S lectionne jusqu'au d but ou  la fin de ligne. |
-| `CMD+Fl che haut/bas` | D but ou fin du document. |
-| `Option+Suppr` | Supprime le mot pr c dent. |
+| `CMD+Flèche gauche/droite` | Début ou fin de ligne. |
+| `Option+Flèche gauche/droite` | Déplace le curseur d'un mot. |
+| `Shift+Flèche` | Étend la sélection. |
+| `Option+Shift+Flèche gauche/droite` | Étend la sélection d'un mot. |
+| `CMD+Shift+Flèche gauche/droite` | Sélectionne jusqu'au début ou à la fin de ligne. |
+| `CMD+Flèche haut/bas` | Début ou fin du document. |
+| `Option+Suppr` | Supprime le mot précédent. |
 | `Fn+Suppr` | Supprime vers l'avant. |
-| `CMD+Suppr` | Supprime jusqu'au d but de la ligne. |
+| `CMD+Suppr` | Supprime jusqu'au début de la ligne. |
 
-### Captures d' cran
+### Captures d'écran
 
 | Raccourci | Action |
 |---|---|
-| `CMD+Shift+3` | Capture l' cran entier. |
-| `CMD+Shift+4` | Capture une zone ; `Espace` pour capturer une fen tre. |
+| `CMD+Shift+3` | Capture l'écran entier. |
+| `CMD+Shift+4` | Capture une zone ; `Espace` pour capturer une fenêtre. |
 | `CMD+Shift+5` | Outils de capture et d'enregistrement. |
 | `CMD+Shift+6` | Capture la Touch Bar, si disponible. |
 | Ajoute `Ctrl` | Copie la capture dans le presse-papiers au lieu de l'enregistrer. |
@@ -484,23 +482,23 @@ Pr fixe par d faut : `Ctrl+b`. Appuie sur `Ctrl+b`, rel che, puis appuie sur la 
 
 | Raccourci | Action |
 |---|---|
-| `Ctrl+CMD+Q` | Verrouille l' cran imm diatement. |
-| `CMD+Option+ jecter` | Met le Mac en veille imm diatement, si touche jecter pr sente. |
-| `CMD+Option+Touch ID` | Met le Mac en veille imm diatement, sur MacBook avec Touch ID. |
-| `Ctrl+Shift+Bouton d'alimentation` | Met uniquement l' cran en veille. |
-| `Ctrl+CMD+Bouton d'alimentation` | D marre, avec confirmation ventuelle. |
-| `Ctrl+Option+CMD+Bouton d'alimentation` | teint, avec confirmation ventuelle. |
-| Maintenir le bouton d'alimentation | Force l'arr t, en cas de blocage uniquement. |
+| `Ctrl+CMD+Q` | Verrouille l'écran immédiatement. |
+| `CMD+Option+Éjecter` | Met le Mac en veille immédiatement, si touche Éjecter présente. |
+| `CMD+Option+Touch ID` | Met le Mac en veille immédiatement, sur MacBook avec Touch ID. |
+| `Ctrl+Shift+Bouton d'alimentation` | Met uniquement l'écran en veille. |
+| `Ctrl+CMD+Bouton d'alimentation` | Redémarre, avec confirmation éventuelle. |
+| `Ctrl+Option+CMD+Bouton d'alimentation` | Éteint, avec confirmation éventuelle. |
+| Maintenir le bouton d'alimentation | Force l'arrêt, en cas de blocage uniquement. |
 
-### R glages rapides
+### Réglages rapides
 
 | Raccourci | Action |
 |---|---|
-| `CMD+,` | R glages de l'application active. |
-| `Option+clic` sur Wi-Fi/Bluetooth/son/batterie | Options suppl mentaires dans la barre des menus. |
-| `Option+Luminosit ` | R glages d' cran directement. |
-| `Option+Volume` | R glages audio directement. |
-| `Option+Clavier` | R glages clavier directement. |
+| `CMD+,` | Réglages de l'application active. |
+| `Option+clic` sur Wi-Fi/Bluetooth/son/batterie | Options supplémentaires dans la barre des menus. |
+| `Option+Luminosité` | Réglages d'écran directement. |
+| `Option+Volume` | Réglages audio directement. |
+| `Option+Clavier` | Réglages clavier directement. |
 
 ---
 
@@ -509,7 +507,7 @@ Pr fixe par d faut : `Ctrl+b`. Appuie sur `Ctrl+b`, rel che, puis appuie sur la 
 [↑ Sommaire](#sommaire)
 
 ```bash
-# Agents sans tmux — s'arr tent si le terminal se ferme
+# Agents sans tmux — s'arrêtent si le terminal se ferme
 cc-macpro                  # Ollama natif sur macpro
 oc-macpro                  # Ollama natif sur macpro
 cc-mlx-macpro              # MLX Serve sur macpro
@@ -517,7 +515,7 @@ oc-mlx-macpro              # MLX Serve sur macpro
 cc-taichi                  # Ollama sur Taichi
 pi-nvidia                  # NVIDIA cloud
 
-# Agents persistants — continuent apr s d connexion
+# Agents persistants — continuent après déconnexion
 cc-tmux-macpro
 oc-tmux-macpro
 cc-tmux-mlx-macpro
@@ -525,30 +523,30 @@ oc-tmux-mlx-macpro
 cc-tmux-taichi
 oc-tmux-taichi
 
-# Inspecter les mod les
+# Inspecter les modèles
 ol-macpro list             # Ollama natif, macpro:11434
 ol-mlx-macpro list         # MLX Serve, macpro:11234
 ol-taichi list             # Ollama, taichi:11434
 
-# Ex cuter Flash Next sur MLX Serve
+# Exécuter Flash Next sur MLX Serve
 ol-mlx-macpro run ddalcu/Qwen3.8-Flash-Next-MLX-Serve-4bit:latest
 
-# Session de d veloppement persistante personnalis e
+# Session de développement persistante personnalisée
 tnew app-dev
 tmls
 tm app-dev
 
-# Mod le sur Taichi
-ol-taichi pull <nom-du-mod le>
-ol-taichi run <nom-du-mod le>
+# Modèle sur Taichi
+ol-taichi pull <nom-du-modèle>
+ol-taichi run <nom-du-modèle>
 
-# Arr t d finitif d'une session
+# Arrêt définitif d'une session
 tkill app-dev
 ```
 
 ```text
-Dans tmux : Ctrl+b, puis d  →  d tache sans arr ter les processus
+Dans tmux : Ctrl+b, puis d  →  détache sans arrêter les processus
 WezTerm   : CMD+t  →  nouvel onglet
-Neovim    : <leader>w  →  sauvegarde ; gd  →  d finition
-macOS     : CMD+Espace  →  Spotlight ; Ctrl+CMD+Q  →  verrouiller l' cran
+Neovim    : <leader>w  →  sauvegarde ; gd  →  définition
+macOS     : CMD+Espace  →  Spotlight ; Ctrl+CMD+Q  →  verrouiller l'écran
 ```

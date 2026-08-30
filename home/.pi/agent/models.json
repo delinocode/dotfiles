@@ -7,8 +7,27 @@
       "models": [
         {
           "id": "qwen3.8-flash-next:125b-mlx",
-          "name": "Qwen3.8 Flash Next 125B (Mac Pro)",
-          "contextWindow": 32768,
+          "name": "Qwen3.8 Flash Next 125B (Mac Pro Ollama)",
+          "contextWindow": 262144,
+          "maxTokens": 8192
+        }
+      ]
+    },
+    "macpro-mlx": {
+      "baseUrl": "http://macpro:11234/v1",
+      "api": "openai-completions",
+      "apiKey": "mlx",
+      "models": [
+        {
+          "id": "ddalcu/Qwen3.8-Flash-Next-MLX-Serve-4bit:latest",
+          "name": "Qwen3.8 Flash Next 4-bit (Mac Pro MLX Serve)",
+          "contextWindow": 262144,
+          "maxTokens": 8192
+        },
+        {
+          "id": "Qwen3.8-Flash-Next-oQ4e-MTP-128k:latest",
+          "name": "Qwen3.8 Flash Next MTP 256k (Mac Pro MLX Serve)",
+          "contextWindow": 262144,
           "maxTokens": 8192
         }
       ]
@@ -47,21 +66,21 @@
           "id": "nvidia/nemotron-3-super-120b-a12b",
           "name": "Nemotron 3 Super 120B (NVIDIA)",
           "reasoning": true,
-          "contextWindow": 131072,
+          "contextWindow": 262144,
           "maxTokens": 8192
         },
         {
           "id": "nvidia/nemotron-3-ultra-550b-a55b",
           "name": "Nemotron 3 Ultra 550B (NVIDIA)",
           "reasoning": true,
-          "contextWindow": 131072,
+          "contextWindow": 262144,
           "maxTokens": 8192
         },
         {
           "id": "deepseek-ai/deepseek-v4-pro-0813",
           "name": "DeepSeek V4 Pro (NVIDIA)",
           "reasoning": true,
-          "contextWindow": 131072,
+          "contextWindow": 262144,
           "maxTokens": 8192
         }
       ]
