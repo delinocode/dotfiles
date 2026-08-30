@@ -101,7 +101,8 @@ in
     VISUAL = "nvim";
     PAGER = "less";
 
-    # Ollama runs remotely on the 128 GB Mac via Tailscale.
+    # Default Ollama server: MacBook Pro 128 GB via Tailscale.
+    # Use ol-taichi / cc-taichi / co-taichi for Taichi explicitly.
     OLLAMA_HOST = "http://macpro:11434";
   };
 
@@ -117,11 +118,11 @@ in
     initContent = ''
       bindkey '^f' autosuggest-accept
 
-      # Ensure terminal shells, including WezTerm, use remote Ollama.
+      # Default Ollama server: MacBook Pro 128 GB.
       export OLLAMA_HOST="http://macpro:11434"
 
-      # Local API keys: kept in ~/dotfiles/secrets/env and ignored by Git.
-      # This is sourced at shell startup, not evaluated by Nix.
+      # API keys are local, outside the Nix store and ignored by Git.
+      # Expected file: ~/dotfiles/secrets/env
       if [ -f "$HOME/dotfiles/secrets/env" ]; then
         source "$HOME/dotfiles/secrets/env"
       fi
@@ -146,16 +147,37 @@ in
       ll = "eza -la";
       cat = "bat";
 
-      # AI coding agents
+      # Existing coding agents
       cc = "claude --dangerously-skip-permissions";
       co = "codex --full-auto";
 
-      # Remote Ollama on Mac Pro
+      # ============================================================
+      # REMOTE OLLAMA SERVERS VIA TAILSCALE
+      # These aliases select a SERVER, not a fixed model.
+      # ============================================================
+
+      # Default Ollama server: MacBook Pro 128 GB
       ol = "ollama";
       ol-list = "ollama list";
-      ol-qwen = "ollama run qwen3.8-flash-next:125b-mlx";
 
-      # NVIDIA Build via Pi
+      # MacBook Pro 128 GB server
+      ol-macpro = ''OLLAMA_HOST="http://macpro:11434" ollama'';
+      cc-macpro = ''OLLAMA_HOST="http://macpro:11434" ollama launch claude'';
+      co-macpro = ''OLLAMA_HOST="http://macpro:11434" ollama launch opencode'';
+
+      # Taichi: Ubuntu server with 2x RTX 3090
+      ol-taichi = ''OLLAMA_HOST="http://taichi:11434" ollama'';
+      cc-taichi = ''OLLAMA_HOST="http://taichi:11434" ollama launch claude'';
+      co-taichi = ''OLLAMA_HOST="http://taichi:11434" ollama launch opencode'';
+
+      # ============================================================
+      # NVIDIA BUILD / NIM VIA PI
+      # Model choice is done interactively inside Pi: /model or Ctrl+L.
+      # ============================================================
+
+      pi-nvidia = ''pi --api-key "$NVIDIA_API_KEY"'';
+
+      # Optional shortcuts that explicitly choose a cloud model.
       pinvidia =
         ''pi --model nvidia/nemotron-3-super-120b-a12b --api-key "$NVIDIA_API_KEY"'';
 
