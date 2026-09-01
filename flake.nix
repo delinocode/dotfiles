@@ -1,5 +1,5 @@
 {
-  description = "NixOS + Home Manager configuration for Taichi";
+  description = "Home Manager configuration for Taichi";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -9,27 +9,15 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }:
+  outputs = { nixpkgs, home-manager, ... }:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
-    in
-    {
-      nixosConfigurations.taichi = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit self; };
-        modules = [
-          ./configuration.nix
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.dela = import ./home.nix;
-          }
-        ];
-      };
-
-      homeConfigurations."taichi-dela" = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.${system};
+      user = "delai";
+    in {
+      homeConfigurations.${user} = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+        extraSpecialArgs = { inherit user; };
         modules = [ ./home.nix ];
       };
     };

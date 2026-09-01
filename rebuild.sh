@@ -1,37 +1,36 @@
 #!/usr/bin/env bash
-#
-# rebuild.sh – NixOS + Home Manager rebuild script for Taichi
-#
-# Usage: ./rebuild.sh
-#
-# This script:
-# 1. Validates the flake
-# 2. Applies the system configuration
-# 3. Applies the Home Manager configuration
-# 4. Sets Zsh as the login shell (if not already)
-#
-# After the first run, log out and back in (or reconnect SSH) to start using Zsh.
+# Rebuild the Home Manager environment for the current user on Taichi.
+# Run with: bash rebuild.sh
 
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HOSTNAME="taichi"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+USER_NAME="$(id -un)"
+FLAKE="$SCRIPT_DIR#$USER_NAME"
 
-# Ensure nixos-rebuild is available for sudo by extending PATH
-export NIX_BIN="${NIX_BIN:-$HOME/.nix-profile/bin}"
-export PATH="$NIX_BIN:$PATH"
+cd "$SCRIPT_DIR"
 
-echo "🔍 Validating flake…"
-nix flake check --impure
+echo "==> Checking flake"
+nix flake check --no-write-lock-file
 
-echo "🔧 Applying system configuration…"
-sudo env PATH="$PATH" nixos-rebuild switch --flake ".#$HOSTNAME" --impure
+echo
+echo "==> Building Home Manager configuration without activation"
+home-manager build --flake "$FLAKE"
 
-echo "🏠 Applying Home Manager configuration…"
-home-manager switch --flake ".#$HOSTNAME-dela" --impure
+echo
+read -r -p "Apply Home Manager configuration for $USER_NAME on Taichi? [y/N] " reply
+case "$reply" in
+  [yY]|[yY][eE][sS]) ;;
+  *)
+    echo "==> Nothing has been activated."
+    exit 0
+    ;;
+esac
 
-echo "🐚 Ensuring Zsh is the login shell…"
+echo "==> Applying Home Manager configuration"
+home-manager switch --flake "$FLAKE"
+
+echo "==> Ensuring Zsh is the login shell"
 bash "$SCRIPT_DIR/scripts/set-login-shell-zsh.sh"
 
-echo "✅ Rebuild complete!"
-echo "💡 If this is your first time running this script, log out and back in (or reconnect SSH) to start using Zsh."
+echo "==> Done. Reconnect SSH or log out/in to start a new Zsh login session."
