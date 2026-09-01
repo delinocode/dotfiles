@@ -6,6 +6,12 @@
 
   programs.home-manager.enable = true;
 
+  programs.git = {
+    enable = true;
+    userName = "Abdelrahmane FERCHICHI";
+    userEmail = "abdel.ferchi38@gmail.com";
+  };
+
   imports = [
     ./modules/packages.nix
     ./modules/shell.nix
