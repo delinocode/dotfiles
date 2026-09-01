@@ -16,21 +16,21 @@
     in
     {
       nixosConfigurations.taichi = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit inputs; };
+        specialArgs = { inherit self; };
         modules = [
-          ./hosts/taichi/configuration.nix
+          ./configuration.nix
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.dela = import ./home/dela/home.nix;
+            home-manager.users.dela = import ./home.nix;
           }
         ];
       };
 
       homeConfigurations."taichi-dela" = home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.${system};
-        modules = [ ./home/dela/home.nix ];
+        modules = [ ./home.nix ];
       };
     };
 }
