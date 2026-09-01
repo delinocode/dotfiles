@@ -1,28 +1,36 @@
 # Contributing
 
-Thanks for taking an interest in these dotfiles.
-This repo is public so you can read it, learn from it, and fork it freely, but it is Kun's personal setup and does not accept pull requests or feature requests.
-If you want to adapt something, please fork the repo and make it yours.
-If you found a bug, please open a bug report issue instead of sending a patch.
-Pull requests are auto-closed here so the repo can stay personal and predictable.
+## File Structure
 
-## Bugs
+```
+.
+├── flake.nix              # Flake entry point
+├── configuration.nix      # System configuration
+├── home.nix              # Home Manager configuration
+├── modules/              # Modular configurations
+│   ├── aliases.nix       # Shell aliases
+│   └── agents.nix        # Agent-specific settings
+├── home/                 # User config files
+│   ├── .config/          # Application configs
+│   ├── .pi/              # Pi configuration
+│   ├── .claude/          # Claude Code config
+│   ├── AGENTS.md         # Agent documentation
+│   └── CLAUDE.md         # Claude instructions
+├── scripts/              # Utility scripts
+└── tests/                # Test scripts
+```
 
-Bug reports are welcome through GitHub Issues only.
-Please use the bug report template and include:
+## Making Changes
 
-- What happened.
-- What you expected to happen.
-- Steps to reproduce the problem.
-- Your environment, including macOS, Linux, or WSL and any relevant Nix or home-manager generation details.
+1. Create a feature branch
+2. Make changes to relevant files
+3. Test with `bash rebuild.sh`
+4. Commit and push
 
-## Feature Ideas
+## Testing
 
-Feature requests are not accepted in this repo.
-If an idea would make these dotfiles better for you, please fork the repo and shape it around your own setup.
+Run tests from the `tests/` directory:
 
-## Pull Requests
-
-Please do not open pull requests against this repo.
-They are auto-closed, including bug-fix PRs.
-For bugs, open an issue with the bug report template so the problem can be understood in the context of this personal setup.
+```bash
+bash tests/pi-calm.test.sh
+```

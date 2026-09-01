@@ -1,2 +1,3 @@
-<!-- Points Claude at AGENTS.md via import; edit AGENTS.md, not this file. -->
-@AGENTS.md
+# CLAUDE.md
+
+Claude Code instructions for this dotfiles repository.

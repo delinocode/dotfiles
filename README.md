@@ -1,35 +1,43 @@
-# Dotfiles for Taichi
+# dotfiles
 
-This repository manages the **Home Manager** configuration for the `delai` user on Taichi. System-wide NixOS configuration remains under `/etc/nixos`; this repo does not run `nixos-rebuild`.
+NixOS + Home Manager configuration for multi-machine development.
 
-## First setup
+## Quick Start
 
 ```bash
-git clone --branch taichi-final https://github.com/delinocode/dotfiles.git ~/dotfiles
-cd ~/dotfiles
+# Clone and apply configuration
+git clone https://github.com/delinocode/dotfiles.git
+cd dotfiles
 bash rebuild.sh
 ```
 
-The script checks the flake, builds the Home Manager generation, asks before activation, activates it, then configures Zsh as the login shell. The first time it needs elevated permissions, it will prompt for your `sudo` password to update `/etc/shells` and run `chsh`.
+## Structure
 
-After the first successful run, disconnect and reconnect SSH (or log out and back in) for Zsh to become the login shell.
+- `flake.nix` / `flake.lock` — Nix flake definition
+- `configuration.nix` — System-wide NixOS configuration
+- `home.nix` — Home Manager user configuration
+- `modules/` — Modular Nix configurations (aliases, agents, etc.)
+- `home/` — Per-user config files (`.config/`, `.pi/`, `.claude/`)
+- `scripts/` — Utility scripts
+- `tests/` — Test scripts
 
-## Updating configuration
-
-After changing files in this repository:
+## Usage
 
 ```bash
-cd ~/dotfiles
+# Rebuild system and home configuration
 bash rebuild.sh
+
+# Update flake inputs
+bash update.sh
 ```
 
-Run scripts using `bash script-name.sh`; no manual `chmod` is required.
+## Machines
 
-## Manual Zsh setup
+- `taichi` — Primary development machine
+- `macpro` — Remote build/ML host
+- `calm` — Secondary machine
 
-If needed, rerun only the login-shell setup:
+## Documentation
 
-```bash
-cd ~/dotfiles
-bash scripts/set-login-shell-zsh.sh
-```
+- `CONTRIBUTING.md` — How to contribute
+- `LICENSE` — MIT License
