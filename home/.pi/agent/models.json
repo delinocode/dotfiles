@@ -13,20 +13,45 @@
         }
       ]
     },
+    "taichi-ollama": {
+      "baseUrl": "http://taichi:11434/v1",
+      "api": "openai-completions",
+      "apiKey": "ollama",
+      "models": [
+        {
+          "id": "nemotron-3.5-lightning:30b-a3b",
+          "name": "Nemotron 3.5 Lightning 30B A3B (Taichi)",
+          "contextWindow": 262144,
+          "maxTokens": 8192
+        },
+        {
+          "id": "qwen3.8:27b-q8_0",
+          "name": "Qwen3.8 27B Q8_0 (Taichi)",
+          "contextWindow": 262144,
+          "maxTokens": 8192
+        }
+      ]
+    },
     "macpro-mlx": {
       "baseUrl": "http://macpro:11234/v1",
       "api": "openai-completions",
       "apiKey": "mlx",
       "models": [
         {
-          "id": "ddalcu/Qwen3.8-Flash-Next-MLX-Serve-4bit:latest",
+          "id": "labhraighlep/Qwen3.8-Flash-Next-MLX-Serve-4bit",
           "name": "Qwen3.8 Flash Next 4-bit (Mac Pro MLX Serve)",
           "contextWindow": 262144,
           "maxTokens": 8192
         },
         {
-          "id": "Qwen3.8-Flash-Next-oQ4e-MTP-128k:latest",
-          "name": "Qwen3.8 Flash Next MTP 256k (Mac Pro MLX Serve)",
+          "id": "mlx-community/Muse-Glimmer-30B-4bit",
+          "name": "Muse Glimmer 30B 4-bit (Mac Pro MLX Serve)",
+          "contextWindow": 262144,
+          "maxTokens": 8192
+        },
+        {
+          "id": "Qwen3.8-Flash-Next-oQ4e-MTP-128k",
+          "name": "Qwen3.8 Flash Next MTP 128k (Mac Pro MLX Serve)",
           "contextWindow": 262144,
           "maxTokens": 8192
         }
