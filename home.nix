@@ -8,8 +8,12 @@
 
   programs.git = {
     enable = true;
-    userName = "Abdelrahmane FERCHICHI";
-    userEmail = "abdel.ferchi38@gmail.com";
+    settings = {
+      user = {
+        name = "Abdelrahmane FERCHICHI";
+        email = "abdel.ferchi38@gmail.com";
+      };
+    };
   };
 
   imports = [
