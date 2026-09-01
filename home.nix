@@ -1,11 +1,15 @@
 { config, pkgs, user, ... }:
 
 let
+  system = pkgs.stdenv.hostPlatform.system;
+  isDarwin = builtins.match ".+-darwin" system != null;
+  isLinux = builtins.match ".+-linux" system != null;
   dotfiles = "${config.home.homeDirectory}/dotfiles";
 in
 {
   home.username = user;
-  home.homeDirectory = "/Users/${user}";
+  # /Users on macOS, /home on Linux.
+  home.homeDirectory = if isLinux then "/home/${user}" else "/Users/${user}";
   home.stateVersion = "24.11";
 
   # ============================================================
@@ -82,7 +86,6 @@ in
     # Containers
     docker
     docker-compose
-    colima
 
     # AI agents
     pi-coding-agent
@@ -90,7 +93,11 @@ in
 
     # Fonts
     nerd-fonts.hack
-  ];
+  ]
+  # Docker on macOS goes through colima; Linux uses its native runtime.
+  ++ (if isDarwin then [ colima ] else [])
+  # Claude Code CLI - the macOS host receives it via the claude-code cask.
+  ++ (if isLinux then [ nodePackages."@anthropic-ai/claude-code" ] else []);
 
   # ============================================================
   # ENVIRONMENT
@@ -258,23 +265,12 @@ in
       ol-macpro =
         ''OLLAMA_HOST="http://macpro:11434" ollama'';
 
-      cc-macpro =
-        ''OLLAMA_HOST="http://macpro:11434" ollama launch claude'';
-
-      oc-macpro =
-        ''OLLAMA_HOST="http://macpro:11434" ollama launch opencode'';
-
-      # Taichi — native Ollama.
+      # Taichi — native Ollama (Tailscale name; on taichi itself it
+      # simply resolves to this box).
       ol-taichi =
         ''OLLAMA_HOST="http://taichi:11434" ollama'';
 
-      cc-taichi =
-        ''OLLAMA_HOST="http://taichi:11434" ollama launch claude'';
-
-      oc-taichi =
-        ''OLLAMA_HOST="http://taichi:11434" ollama launch opencode'';
-
-      # Local Ollama on the MacBook Air.
+      # Local Ollama on this machine.
       ol-local =
         ''OLLAMA_HOST="http://127.0.0.1:11434" ollama'';
 
@@ -312,6 +308,109 @@ in
       # Claude Code + MLX Serve interactive picker.
       cc-mlx-macpro =
         ''$HOME/.local/bin/cc-mlx-picker'';
+
+      # ============================================================
+      # PI
+      #
+      # Providers and models are defined in:
+      # ~/.pi/agent/models.json
+      #
+      # Every backend alias explicitly selects the intended provider.
+      # Use /model or Ctrl+L inside Pi to choose its configured model.
+      # ============================================================
+
+      # Pi default: defaultProvider/defaultModel in settings.json.
+      pi-local = "pi";
+
+      # Pi + Mac Pro native Ollama.
+      pi-macpro =
+        ''pi --provider macpro-ollama'';
+
+      # Pi + Taichi native Ollama.
+      pi-taichi =
+        ''pi --provider taichi-ollama'';
+
+      # Pi + Mac Pro MLX Serve.
+      pi-mlx-macpro =
+        ''pi --provider macpro-mlx'';
+
+      # Pi + NVIDIA cloud. The provider reads $NVIDIA_API_KEY from
+      # models.json / the environment loaded by secrets/env.
+      pi-nvidia =
+        ''pi --provider nvidia'';
+
+      # Pi + direct NVIDIA model shortcuts.
+      pinvidia =
+        ''pi --provider nvidia --model nvidia/nemotron-3-super-120b-a12b'';
+
+      pinvidia-ultra =
+        ''pi --provider nvidia --model nvidia/nemotron-3-ultra-550b-a55b'';
+
+      pideepseek =
+        ''pi --provider nvidia --model deepseek-ai/deepseek-v4-pro-0813'';
+
+      # ============================================================
+      # TMUX — PERSISTENT AGENTS
+      #
+      # Ctrl+b then d: detach without stopping the agent.
+      # `-A` creates the named session if absent, otherwise reconnects.
+      # ============================================================
+
+      # Claude Code + MLX Serve dynamic picker.
+      cc-tmux-mlx-macpro =
+        ''tmux new-session -A -s claude-mlx-macpro "$HOME/.local/bin/cc-mlx-picker"'';
+
+      # Pi + Mac Pro native Ollama.
+      pi-tmux-macpro =
+        ''tmux new-session -A -s pi-macpro "pi --provider macpro-ollama"'';
+
+      # Pi + Taichi native Ollama.
+      pi-tmux-taichi =
+        ''tmux new-session -A -s pi-taichi "pi --provider taichi-ollama"'';
+
+      # Pi + Mac Pro MLX Serve.
+      pi-tmux-mlx-macpro =
+        ''tmux new-session -A -s pi-mlx-macpro "pi --provider macpro-mlx"'';
+
+      # Pi + NVIDIA cloud.
+      pi-tmux-nvidia =
+        ''tmux new-session -A -s pi-nvidia "pi --provider nvidia"'';
+
+      # tmux management.
+      tnew = "tmux new-session -A -s";
+      tmls = "tmux ls";
+      tm = "tmux attach-session -d -t";
+      tmwatch = "tmux attach-session -t";
+      tkill = "tmux kill-session -t";
+      tname = "tmux display-message -p '#S'";
+      twindows = "tmux list-windows -a";
+      tclients = "tmux list-clients";
+      treload = "tmux source-file ~/.tmux.conf";
+    }
+    // pkgs.lib.optionalAttrs isDarwin {
+      # ============================================================
+      # MAC ONLY
+      #
+      # `ollama launch`, launchctl and `open -a` belong to Ollama
+      # Desktop on macOS; taichi (Ubuntu) gets CLI equivalents in the
+      # block below instead.
+      # ============================================================
+
+      # Claude Code + native Ollama macpro.
+      cc-macpro =
+        ''OLLAMA_HOST="http://macpro:11434" ollama launch claude'';
+
+      # Claude Code + native Ollama taichi.
+      cc-taichi =
+        ''OLLAMA_HOST="http://taichi:11434" ollama launch claude'';
+
+      # OpenCode + native Ollama macpro.
+      oc-macpro =
+        ''OLLAMA_HOST="http://macpro:11434" ollama launch opencode'';
+
+      # OpenCode + native Ollama taichi.
+      oc-taichi =
+        ''OLLAMA_HOST="http://taichi:11434" ollama launch opencode'';
 
       # OpenCode + MLX Serve.
       oc-mlx-macpro =
@@ -371,111 +470,104 @@ in
         open -a Ollama
       '';
 
-      # ============================================================
-      # PI
-      #
-      # Providers and models are defined in:
-      # ~/.pi/agent/models.json
-      #
-      # Every backend alias explicitly selects the intended provider.
-      # Use /model or Ctrl+L inside Pi to choose its configured model.
-      # ============================================================
-
-      # Pi default: defaultProvider/defaultModel in settings.json.
-      pi-local = "pi";
-
-      # Pi + Mac Pro native Ollama.
-      pi-macpro =
-        ''pi --provider macpro-ollama'';
-
-      # Pi + Taichi native Ollama.
-      pi-taichi =
-        ''pi --provider taichi-ollama'';
-
-      # Pi + Mac Pro MLX Serve.
-      pi-mlx-macpro =
-        ''pi --provider macpro-mlx'';
-
       # Pi + local MacBook Air oMLX.
       pi-omlx =
         ''pi --provider macbook-omlx'';
 
-      # Pi + NVIDIA cloud. The provider reads $NVIDIA_API_KEY from
-      # models.json / the environment loaded by secrets/env.
-      pi-nvidia =
-        ''pi --provider nvidia'';
-
-      # Pi + direct NVIDIA model shortcuts.
-      pinvidia =
-        ''pi --provider nvidia --model nvidia/nemotron-3-super-120b-a12b'';
-
-      pinvidia-ultra =
-        ''pi --provider nvidia --model nvidia/nemotron-3-ultra-550b-a55b'';
-
-      pideepseek =
-        ''pi --provider nvidia --model deepseek-ai/deepseek-v4-pro-0813'';
+      # Pi + local oMLX, in tmux.
+      pi-tmux-omlx =
+        ''tmux new-session -A -s pi-omlx "pi --provider macbook-omlx"'';
 
       # ============================================================
-      # TMUX — PERSISTENT AGENTS
-      #
-      # Ctrl+b then d: detach without stopping the agent.
-      # `-A` creates the named session if absent, otherwise reconnects.
+      # TMUX AGENTS — OLLAMA DESKTOP (MAC)
       # ============================================================
 
       # Claude Code + native Ollama macpro.
       cc-tmux-macpro =
         ''tmux new-session -A -s claude-macpro "OLLAMA_HOST=http://macpro:11434 ollama launch claude"'';
 
-      # Claude Code + native Ollama Taichi.
+      # Claude Code + native Ollama taichi.
       cc-tmux-taichi =
         ''tmux new-session -A -s claude-taichi "OLLAMA_HOST=http://taichi:11434 ollama launch claude"'';
-
-      # Claude Code + MLX Serve dynamic picker.
-      cc-tmux-mlx-macpro =
-        ''tmux new-session -A -s claude-mlx-macpro "$HOME/.local/bin/cc-mlx-picker"'';
 
       # OpenCode + native Ollama macpro.
       oc-tmux-macpro =
         ''tmux new-session -A -s opencode-macpro "OLLAMA_HOST=http://macpro:11434 ollama launch opencode"'';
 
-      # OpenCode + native Ollama Taichi.
+      # OpenCode + native Ollama taichi.
       oc-tmux-taichi =
         ''tmux new-session -A -s opencode-taichi "OLLAMA_HOST=http://taichi:11434 ollama launch opencode"'';
 
       # OpenCode + MLX Serve.
       oc-tmux-mlx-macpro =
         ''tmux new-session -A -s opencode-mlx-macpro "OLLAMA_HOST=http://macpro:11234 ollama launch opencode"'';
+    }
+    // pkgs.lib.optionalAttrs isLinux {
+      # ============================================================
+      # TAICHI (UBUNTU) ONLY
+      #
+      # No Ollama Desktop on Linux: agents point straight at the
+      # Anthropic-compatible endpoint of macpro via env.
+      # - `cc*` runs the Claude Code CLI (Nix pkg, see home.packages)
+      # - `oc*` runs opencode against the macpro providers declared
+      #   in the shared opencode.json
+      # ============================================================
 
-      # Pi + Mac Pro native Ollama.
-      pi-tmux-macpro =
-        ''tmux new-session -A -s pi-macpro "pi --provider macpro-ollama"'';
+      # Claude Code + Mac Pro native Ollama.
+      cc-macpro =
+        ''ANTHROPIC_API_KEY=ollama ANTHROPIC_BASE_URL=http://macpro:11434 claude'';
 
-      # Pi + Taichi native Ollama.
-      pi-tmux-taichi =
-        ''tmux new-session -A -s pi-taichi "pi --provider taichi-ollama"'';
+      # Claude Code + taichi's own Ollama.
+      cc-taichi =
+        ''ANTHROPIC_API_KEY=ollama ANTHROPIC_BASE_URL=http://127.0.0.1:11434 claude'';
 
-      # Pi + Mac Pro MLX Serve.
-      pi-tmux-mlx-macpro =
-        ''tmux new-session -A -s pi-mlx-macpro "pi --provider macpro-mlx"'';
+      # OpenCode + Mac Pro Ollama: already the default model in
+      # opencode.json.
+      oc-macpro = "opencode";
 
-      # Pi + local oMLX.
-      pi-tmux-omlx =
-        ''tmux new-session -A -s pi-omlx "pi --provider macbook-omlx"'';
+      # OpenCode + Mac Pro MLX Serve (provider in opencode.json).
+      oc-mlx-macpro =
+        "opencode -m macpro-mlx/Qwen3.8-Flash-Next-oQ4e-MTP-128k";
 
-      # Pi + NVIDIA cloud.
-      pi-tmux-nvidia =
-        ''tmux new-session -A -s pi-nvidia "pi --provider nvidia"'';
+      # ============================================================
+      # SSH TUNNEL TO MACPRO (BACKUP IF TAILSCALE IS DOWN)
+      #
+      # 127.0.0.1:12435 -> macpro:11434 via SSH
+      # ============================================================
 
-      # tmux management.
-      tnew = "tmux new-session -A -s";
-      tmls = "tmux ls";
-      tm = "tmux attach-session -d -t";
-      tmwatch = "tmux attach-session -t";
-      tkill = "tmux kill-session -t";
-      tname = "tmux display-message -p '#S'";
-      twindows = "tmux list-windows -a";
-      tclients = "tmux list-clients";
-      treload = "tmux source-file ~/.tmux.conf";
+      # Start the SSH tunnel to the Mac Pro Ollama server.
+      ol-tunnels = ''
+        ssh -fN -L 127.0.0.1:12435:localhost:11434 maclino@macpro
+      '';
+
+      # Stop only that exact tunnel.
+      ol-stop-tunnels = ''
+        pkill -f "ssh -fN -L 127.0.0.1:12435:localhost:11434 maclino@macpro" || true
+      '';
+
+      # Test Mac Pro Ollama through the local SSH tunnel.
+      ol-tunnel-macpro =
+        ''OLLAMA_HOST="http://127.0.0.1:12435" ollama'';
+
+      # ============================================================
+      # TMUX AGENTS — TAICHI
+      # ============================================================
+
+      # Claude Code + Mac Pro native Ollama.
+      cc-tmux-macpro =
+        ''tmux new-session -A -s claude-macpro "ANTHROPIC_API_KEY=ollama ANTHROPIC_BASE_URL=http://macpro:11434 claude"'';
+
+      # Claude Code + taichi's own Ollama.
+      cc-tmux-taichi =
+        ''tmux new-session -A -s claude-taichi "ANTHROPIC_API_KEY=ollama ANTHROPIC_BASE_URL=http://127.0.0.1:11434 claude"'';
+
+      # OpenCode + Mac Pro Ollama (default model in opencode.json).
+      oc-tmux-macpro =
+        ''tmux new-session -A -s opencode-macpro "opencode"'';
+
+      # OpenCode + Mac Pro MLX Serve.
+      oc-tmux-mlx-macpro =
+        ''tmux new-session -A -s opencode-mlx-macpro "opencode -m macpro-mlx/Qwen3.8-Flash-Next-oQ4e-MTP-128k"'';
     };
   };
 

@@ -10,8 +10,8 @@
 
 Watch the walkthrough: https://youtu.be/5N-okeDdIuI
 
-My personal Mac setup, managed with nix-darwin and home-manager.
-One repo, one command, and a fresh Mac ends up configured the same way every time.
+My personal setup for two machines - a MacBook Air (nix-darwin) and taichi, an Ubuntu box on the same Tailscale (standalone home-manager).
+One repo, one command per machine, and each ends up configured the same way every time.
 
 ## Contributing / Using This Repo
 
@@ -37,6 +37,7 @@ Running the switch builds:
 - Apple Silicon Mac, by default.
 - Intel Mac: change one line.
   In `configuration.nix`, set `nixpkgs.hostPlatform = "x86_64-darwin";` (the comment right there tells you the same thing).
+- taichi (Ubuntu) is configured for `x86_64-linux` in `flake.nix`; change `taichiPkgs` there if your box is ARM.
 
 ## Fresh-machine setup
 
@@ -77,6 +78,32 @@ nix build .#darwinConfigurations.mac.system --dry-run
 
 If you renamed the host label in "Make it yours", substitute your label for `mac` in these commands.
 
+## Taichi (Ubuntu)
+
+taichi is the second host in `flake.nix`: a regular Ubuntu box configured with standalone home-manager (no NixOS, no nix-darwin), managed from the same repo.
+It's on the same Tailscale as the Mac, so the remote-model aliases work from it too.
+
+On a fresh taichi, from a clone of this repo:
+
+```sh
+./bootstrap-taichi.sh
+```
+
+Same idea as `bootstrap.sh`, Linux-flavoured:
+
+1. Checks the `taichiUser` configured in `flake.nix` against your actual username.
+2. Installs Nix on Linux (multi-user, needs sudo), if it isn't already installed.
+3. Symlinks this repo to `~/.dotfiles`, then runs the first `home-manager switch --flake ~/.dotfiles#taichi`.
+   It fetches the `home-manager` tool from the pinned release branch; the config applied is still pinned by this repo's `flake.lock`.
+4. Puts `home-manager` on PATH (`nix profile add`), so afterwards just run the `home-manager switch` line above for every later change.
+
+What differs on taichi:
+
+- No Homebrew and no macOS system defaults - `configuration.nix` stays Mac-only.
+- No Ollama Desktop: the `cc*` aliases run the Claude Code CLI (from Nix) against macpro's Ollama (Anthropic-compatible endpoint) or taichi's own Ollama; `oc*` runs opencode against the macpro providers in `home/.config/opencode/opencode.json`; `ol-*`/`pi-*` aliases are unchanged since Tailscale does the routing.
+- `colima` is not installed (Docker runs natively on Linux), and the MacBook-Air-only aliases (oMLX, Ollama Desktop shortcuts, the taichi SSH tunnel) exist only on the Mac.
+- Plain `cc`/`oc`/`pi` read `~/.claude/settings.json`, `~/.config/opencode/opencode.json` and `~/.pi/agent/settings.json`, which live in this repo; the API keys in `secrets/env` are gitignored, so copy that file to taichi yourself.
+
 ## Daily use
 
 Edit the config files in place, then apply:
@@ -93,8 +120,8 @@ No separate build-and-copy step.
 This repo is mine.
 If you clone it, review these before you run `bootstrap.sh`:
 
-- **Username**: run `./bootstrap.sh` (it detects your macOS username and offers to set it) OR change the single `user = "kunchen"` line in `flake.nix`.
-  Everything else (`configuration.nix`, `home.nix`, home directory paths) is threaded from that one variable.
+- **Usernames**: run `./bootstrap.sh` (Mac) or `./bootstrap-taichi.sh` (taichi); each detects your actual username and offers to set its own line in `flake.nix` (`macUser` / `taichiUser`).
+  Everything else (`configuration.nix`, `home.nix`, home directory paths) is threaded from those two variables.
 - **Host label** `"mac"`, in three places: `flake.nix` (the `darwinConfigurations."mac"` name), `rebuild.sh:5` (the `#mac` at the end of the flake reference), and `bootstrap.sh`'s first-switch command (also `#mac`).
   All three have to match.
 - **CPU architecture**, `hostPlatform` in `configuration.nix` (see Prerequisites above).
@@ -132,11 +159,12 @@ If you don't use it, just remove it from `brews` in your copy.
 ## Repo tour
 
 - `flake.nix` - the entry point.
-  Wires up nixpkgs, nix-darwin, home-manager, and nix-homebrew, and declares the `mac` machine.
-- `configuration.nix` - system-level config: macOS defaults, Homebrew.
-- `home.nix` - user-level config: shell, packages, prompt, and the symlinks described below.
-- `rebuild.sh` - re-applies the config after the first switch.
+  Wires up nixpkgs, nix-darwin, home-manager, and nix-homebrew, and declares both hosts: `darwinConfigurations."mac"` and `homeConfigurations."taichi"`.
+- `configuration.nix` - system-level config for the Mac: macOS defaults, Homebrew.
+- `home.nix` - user-level config shared by both hosts: shell, packages, prompt, and the symlinks described below.
+- `rebuild.sh` - re-applies the Mac config after the first switch.
   Run this every time you make a change.
+- `bootstrap-taichi.sh` / `home-manager switch --flake ~/.dotfiles#taichi` - the same story on taichi (Ubuntu).
 - `home/` - the actual config files that get symlinked into place; the sections below explain the shared symlink model and Pi's narrower selective setup.
 
 ## How the symlinks work

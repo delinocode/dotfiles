@@ -1,4 +1,4 @@
-# Référence complète — Zsh, agents, tmux, WezTerm, Neovim et macOS
+# Référence complète — Zsh, agents, tmux, WezTerm, Neovim, macOS et Ubuntu (taichi)
 
 ## Sommaire
 
@@ -20,6 +20,7 @@
 - [6. Raccourcis clavier Neovim](#6-raccourcis-clavier-neovim)
 - [7. Raccourcis clavier macOS](#7-raccourcis-clavier-macos)
 - [8. Routine rapide](#8-routine-rapide)
+- [9. Alias sur taichi (Ubuntu)](#9-alias-sur-taichi-ubuntu)
 
 ---
 
@@ -231,6 +232,51 @@ Dans tmux, `Ctrl+b` puis `d` d tache sans arr ter les processus.
 | `twindows` | `tmux list-windows -a` | Liste toutes les fen tres/onglets tmux, toutes sessions confondues. |
 | `tclients` | `tmux list-clients` | Liste les clients attach s aux sessions tmux. |
 | `treload` | `tmux source-file ~/.tmux.conf` | Recharge une future config `~/.tmux.conf`. |
+
+## 9. Alias sur taichi (Ubuntu)
+
+[↑ Sommaire](#sommaire)
+
+La config Nix s'applique maintenant à **deux machines** : le MacBook Air (nix-darwin) et **taichi** (Ubuntu, standalone home-manager). Les sections 1 à 7 décrivent la partie macOS.
+
+### 9.1 Config commune aux deux machines
+
+Ces alias fonctionnent à l'identique sur les deux hosts, car Tailscale route les noms :
+
+| Alias | Commande | Description |
+|---|---|---|
+| `ol` / `ol-list` | `ollama` / `ollama list` | Ollama par défaut → `http://macpro:11434` (l'autre machine). |
+| `ol-macpro` | `OLLAMA_HOST=http://macpro:11434 ollama` | Ollama du Mac Pro via Tailscale (depuis taichi = autre machine). |
+| `ol-taichi` | `OLLAMA_HOST=http://taichi:11434 ollama` | Ollama de taichi (depuis le Mac = autre machine). |
+| `ol-local` | `OLLAMA_HOST=http://127.0.0.1:11434 ollama` | Ollama **natif** de la machine courante. |
+| `cc-mlx-macpro` | `~/.local/bin/cc-mlx-picker` | Sélecteur interactif de modèles MLX Serve (marche depuis taichi via Tailscale). |
+| `pi-local` | `pi` | Pi sur le provider par défaut (`taichi-ollama` → 11434 de la machine courante). |
+| `pi-macpro` / `pi-taichi` / `pi-mlx-macpro` | `pi --provider <...>` | Providers définis dans `home/.pi/agent/models.json` (fonctionnent sur les deux machines). |
+| `pi-nvidia` / `pinvidia` / `pinvidia-ultra` / `pideepseek` | `pi --provider nvidia` | NVIDIA Build (clé dans `secrets/env` → à copier sur taichi). |
+| `pi-tmux-*` / `tnew` / `tmls` / `tm` / `tmwatch` / `tkill` / `tname` / `twindows` / `tclients` / `treload` | idem | Sessions tmux et gestion tmux. |
+
+### 9.2 Supprimés sur taichi (spécifiques Ollama Desktop)
+
+`ollama launch <app>` (utilisé par `cc-macpro`, `cc-taichi`, `oc-macpro`, `oc-taichi`), `launchctl setenv`, et `open -a Ollama` n'existent que sur macOS.
+
+### 9.3 Équivalents sur taichi (CLI + variables d'env)
+
+| Alias | Commande | Description |
+|---|---|---|
+| `cc-macpro` | `ANTHROPIC_API_KEY=ollama ANTHROPIC_BASE_URL=http://macpro:11434 claude` | Claude Code CLI (paquet Nix `nodePackages."@anthropic-ai/claude-code"`) branché sur l'API Anthropic-compatible de macpro. |
+| `cc-taichi` | `ANTHROPIC_API_KEY=ollama ANTHROPIC_BASE_URL=http://127.0.0.1:11434 claude` | Claude Code branché sur l'Ollama **natif** de taichi. |
+| `oc-macpro` | `opencode` | OpenCode avec le provider par défaut (`macpro-ollama` dans `opencode.json`), via Tailscale. |
+| `oc-mlx-macpro` | `opencode -m macpro-mlx/Qwen3.8-Flash-Next-oQ4e-MTP-128k` | OpenCode branché sur MLX Serve (provider `macpro-mlx` ajouté à `opencode.json`). |
+| `cc-tmux-macpro` / `cc-tmux-taichi` | `tmux new-session -A -s <nom> "ANTHROPIC_BASE_URL=… claude"` | Versions tmux persistantes (créer avec `tnew` si absent). |
+| `oc-tmux-macpro` | `tmux new-session -A -s opencode-macpro "opencode"` | OpenCode + macpro Ollama en tmux. |
+| `oc-tmux-mlx-macpro` | `tmux new-session -A -s opencode-mlx-macpro "opencode -m macpro-mlx/…"` | OpenCode + MLX Serve en tmux. |
+| `ol-tunnels` / `ol-stop-tunnels` | `ssh -fN -L 127.0.0.1:12435:localhost:11434 maclino@macpro` | Un seul tunnel (vers macpro) : pas de tunnel SSH *vers taichi* puisque c'est taichi. |
+| `ol-tunnel-macpro` | `OLLAMA_HOST=http://127.0.0.1:12435 ollama` | Ollama macpro via tunnel SSH de secours. |
+
+### 9.4 Appli qui n'existe pas dans Nixpkgs
+
+- Si le paquet est dans `nixpkgs` pour `x86_64-linux` : l'ajouter à `home.packages` dans `home.nix`, puis `home-manager switch --flake ~/.dotfiles#taichi`.
+- Sinon (ex. `herdr`, seulement en cask Homebrew sur le Mac) : Nix ne peut pas l'installer sur taichi. Les fichiers de *config* dans `home/` restent partagés, mais il faut installer le *binaire* à la main sur taichi (`apt`, AppImage, npm…).
 
 ---
 

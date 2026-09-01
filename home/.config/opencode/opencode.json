@@ -23,6 +23,43 @@
         }
       }
     },
+    "macpro-mlx": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Mac Pro — MLX Serve",
+      "options": {
+        "baseURL": "http://macpro:11234/v1",
+        "apiKey": "mlx"
+      },
+      "models": {
+        "labhraighlep/Qwen3.8-Flash-Next-MLX-Serve-4bit": {
+          "name": "Qwen3.8 Flash Next 4-bit (Mac Pro MLX)",
+          "tools": true,
+          "reasoning": true,
+          "limit": {
+            "context": 262144,
+            "output": 8192
+          }
+        },
+        "mlx-community/Muse-Glimmer-30B-4bit": {
+          "name": "Muse Glimmer 30B 4-bit (Mac Pro MLX)",
+          "tools": true,
+          "reasoning": true,
+          "limit": {
+            "context": 262144,
+            "output": 8192
+          }
+        },
+        "Qwen3.8-Flash-Next-oQ4e-MTP-128k": {
+          "name": "Qwen3.8 Flash Next MTP 128k (Mac Pro MLX)",
+          "tools": true,
+          "reasoning": true,
+          "limit": {
+            "context": 262144,
+            "output": 8192
+          }
+        }
+      }
+    },
     "macbook-omlx": {
       "npm": "@ai-sdk/openai-compatible",
       "name": "MacBook Air — OMLX local",
