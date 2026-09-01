@@ -2,16 +2,16 @@
 #
 # set-login-shell-zsh.sh
 #
-# Sets Zsh as the login shell for the current user (delai) on NixOS.
+# Sets Zsh as the login shell for the current user on NixOS.
 # - Detects Zsh path via `command -v zsh`
 # - Adds it to /etc/shells if missing (requires sudo)
-# - Runs `sudo chsh -s <zsh_path> delai`
+# - Runs `sudo chsh -s <zsh_path> $(whoami)`
 #
 # Safe to run multiple times. Will ask for sudo password only when needed.
 
 set -euo pipefail
 
-TARGET_USER="delai"
+TARGET_USER="$(whoami)"
 
 # Detect Zsh path from the current environment (Nix profile)
 ZSH_PATH="$(command -v zsh || true)"
@@ -22,6 +22,7 @@ if [[ -z "$ZSH_PATH" ]]; then
 fi
 
 echo "🔍 Detected Zsh at: $ZSH_PATH"
+echo "👤 Target user: $TARGET_USER"
 
 # Ensure Zsh path is in /etc/shells
 if ! grep -qxF "$ZSH_PATH" /etc/shells; then
