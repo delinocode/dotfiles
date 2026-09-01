@@ -1,38 +1,36 @@
 {
-  description = "Taichi Ubuntu Home Manager configuration";
+  description = "NixOS + Home Manager configuration for Taichi";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
-
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     home-manager = {
-      url = "github:nix-community/home-manager/release-26.05";
+      url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = { nixpkgs, home-manager, ... }:
+  outputs = { self, nixpkgs, home-manager, ... }:
     let
       system = "x86_64-linux";
-
-      pkgs = import nixpkgs {
-        inherit system;
-        config.allowUnfree = true;
-      };
+      pkgs = nixpkgs.legacyPackages.${system};
     in
     {
-      # Taichi is the only machine managed by this flake.
-      # Run: home-manager switch --flake .#delai
-      homeConfigurations.delai = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-
-        extraSpecialArgs = {
-          user = "delai";
-          dotfiles = "/home/delai/dotfiles";
-        };
-
+      nixosConfigurations.taichi = nixpkgs.lib.nixosSystem {
+        specialArgs = { inherit inputs; };
         modules = [
-          ./home.nix
+          ./hosts/taichi/configuration.nix
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.dela = import ./home/dela/home.nix;
+          }
         ];
+      };
+
+      homeConfigurations."taichi-dela" = home-manager.lib.homeManagerConfiguration {
+        pkgs = nixpkgs.legacyPackages.${system};
+        modules = [ ./home/dela/home.nix ];
       };
     };
 }

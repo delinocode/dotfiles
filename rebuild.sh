@@ -17,11 +17,15 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HOSTNAME="taichi"
 
+# Ensure nixos-rebuild is available for sudo by extending PATH
+export NIX_BIN="${NIX_BIN:-$HOME/.nix-profile/bin}"
+export PATH="$NIX_BIN:$PATH"
+
 echo "🔍 Validating flake…"
 nix flake check --impure
 
 echo "🔧 Applying system configuration…"
-sudo nixos-rebuild switch --flake ".#$HOSTNAME" --impure
+sudo env PATH="$PATH" nixos-rebuild switch --flake ".#$HOSTNAME" --impure
 
 echo "🏠 Applying Home Manager configuration…"
 home-manager switch --flake ".#$HOSTNAME-dela" --impure
