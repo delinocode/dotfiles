@@ -1,27 +1,33 @@
 #!/usr/bin/env bash
-# Taichi-only rebuild script.
-# Validates the flake, builds the Home Manager generation, then asks
-# for confirmation before activating it.
+#
+# rebuild.sh – NixOS + Home Manager rebuild script for Taichi
+#
+# Usage: ./rebuild.sh
+#
+# This script:
+# 1. Validates the flake
+# 2. Applies the system configuration
+# 3. Applies the Home Manager configuration
+# 4. Sets Zsh as the login shell (if not already)
+#
+# After the first run, log out and back in (or reconnect SSH) to start using Zsh.
+
 set -euo pipefail
 
-DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
-cd "$DIR"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+HOSTNAME="taichi"
 
-"$DIR/scripts/check.sh"
+echo "🔍 Validating flake…"
+nix flake check --impure
 
-echo
-read -r -p "Apply Home Manager configuration for delai on Taichi? [y/N] " answer
+echo "🔧 Applying system configuration…"
+sudo nixos-rebuild switch --flake ".#$HOSTNAME" --impure
 
-case "$answer" in
-  y|Y|yes|YES)
-    echo "==> Applying Home Manager configuration"
-    if command -v home-manager >/dev/null 2>&1; then
-      exec home-manager switch --flake "$DIR#delai"
-    else
-      exec nix run github:nix-community/home-manager/release-26.05#homeManager -- switch --flake "$DIR#delai"
-    fi
-    ;;
-  *)
-    echo "==> Cancelled. Nothing has been changed."
-    ;;
-esac
+echo "🏠 Applying Home Manager configuration…"
+home-manager switch --flake ".#$HOSTNAME-dela" --impure
+
+echo "🐚 Ensuring Zsh is the login shell…"
+bash "$SCRIPT_DIR/scripts/set-login-shell-zsh.sh"
+
+echo "✅ Rebuild complete!"
+echo "💡 If this is your first time running this script, log out and back in (or reconnect SSH) to start using Zsh."
