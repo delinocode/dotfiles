@@ -1,128 +1,41 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "share": "disabled",
-  "model": "macpro-ollama/qwen3.8-flash-next:125b-mlx",
-  "small_model": "macbook-omlx/Qwen3.8-27B-4bit",
   "provider": {
+    "taichi-ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama — Taichi Local",
+      "options": {
+        "baseURL": "http://127.0.0.1:11434/v1",
+        "apiKey": "ollama"
+      },
+      "models": {
+        "qwen3.8:27b-q8_0": { "name": "Qwen 3.8 27B Q8 — Taichi" },
+        "nemotron-3.5-lightning:30b-a3b": { "name": "Nemotron 3.5 Lightning 30B — Taichi" }
+      }
+    },
     "macpro-ollama": {
       "npm": "@ai-sdk/openai-compatible",
-      "name": "Mac Pro — Ollama",
+      "name": "Ollama — Mac Pro",
       "options": {
         "baseURL": "http://macpro:11434/v1",
         "apiKey": "ollama"
       },
       "models": {
-        "qwen3.8-flash-next:125b-mlx": {
-          "name": "Qwen3.8 Flash Next 125B (Mac Pro)",
-          "tools": true,
-          "reasoning": true,
-          "limit": {
-            "context": 32768,
-            "output": 8192
-          }
-        }
+        "qwen3.8-flash-next:125b-mlx": { "name": "Qwen 3.8 Flash Next 125B — Mac Pro" },
+        "qwen3:0.6b": { "name": "Qwen 3 0.6B — Mac Pro" }
       }
     },
     "macpro-mlx": {
       "npm": "@ai-sdk/openai-compatible",
-      "name": "Mac Pro — MLX Serve",
+      "name": "MLX Serve — Mac Pro",
       "options": {
         "baseURL": "http://macpro:11234/v1",
-        "apiKey": "mlx"
+        "apiKey": "ollama"
       },
       "models": {
-        "labhraighlep/Qwen3.8-Flash-Next-MLX-Serve-4bit": {
-          "name": "Qwen3.8 Flash Next 4-bit (Mac Pro MLX)",
-          "tools": true,
-          "reasoning": true,
-          "limit": {
-            "context": 262144,
-            "output": 8192
-          }
-        },
-        "mlx-community/Muse-Glimmer-30B-4bit": {
-          "name": "Muse Glimmer 30B 4-bit (Mac Pro MLX)",
-          "tools": true,
-          "reasoning": true,
-          "limit": {
-            "context": 262144,
-            "output": 8192
-          }
-        },
-        "Qwen3.8-Flash-Next-oQ4e-MTP-128k": {
-          "name": "Qwen3.8 Flash Next MTP 128k (Mac Pro MLX)",
-          "tools": true,
-          "reasoning": true,
-          "limit": {
-            "context": 262144,
-            "output": 8192
-          }
-        }
-      }
-    },
-    "macbook-omlx": {
-      "npm": "@ai-sdk/openai-compatible",
-      "name": "MacBook Air — OMLX local",
-      "options": {
-        "baseURL": "http://127.0.0.1:8000/v1",
-        "apiKey": "local"
-      },
-      "models": {
-        "Qwen3.8-27B-4bit": {
-          "name": "Qwen3.8 27B 4-bit (OMLX)",
-          "tools": true,
-          "reasoning": true,
-          "limit": {
-            "context": 8192,
-            "output": 4096
-          }
-        },
-        "Qwen3.8-27B-MTPLX-Optimized-Speed": {
-          "name": "Qwen3.8 27B MTP Speed (OMLX)",
-          "tools": true,
-          "reasoning": true,
-          "limit": {
-            "context": 8192,
-            "output": 4096
-          }
-        }
-      }
-    },
-    "nvidia": {
-      "npm": "@ai-sdk/openai-compatible",
-      "name": "NVIDIA Build",
-      "options": {
-        "baseURL": "https://integrate.api.nvidia.com/v1",
-        "apiKey": "{env:NVIDIA_API_KEY}"
-      },
-      "models": {
-        "nvidia/nemotron-3-super-120b-a12b": {
-          "name": "Nemotron 3 Super 120B (NVIDIA)",
-          "tools": true,
-          "reasoning": true,
-          "limit": {
-            "context": 131072,
-            "output": 8192
-          }
-        },
-        "nvidia/nemotron-3-ultra-550b-a55b": {
-          "name": "Nemotron 3 Ultra 550B (NVIDIA)",
-          "tools": true,
-          "reasoning": true,
-          "limit": {
-            "context": 131072,
-            "output": 8192
-          }
-        },
-        "deepseek-ai/deepseek-v4-pro-0813": {
-          "name": "DeepSeek V4 Pro (NVIDIA)",
-          "tools": true,
-          "reasoning": true,
-          "limit": {
-            "context": 131072,
-            "output": 8192
-          }
-        }
+        "labhraighlep/Qwen3.8-Flash-Next-MLX-Serve-4bit": { "name": "Qwen 3.8 Flash Next 4-bit — MLX Serve Mac Pro" },
+        "mlx-community/Muse-Glimmer-30B-4bit": { "name": "Muse Glimmer 30B 4-bit — MLX Serve Mac Pro" },
+        "Qwen3.8-Flash-Next-oQ4e-MTP-128k": { "name": "Qwen 3.8 Flash Next oQ4e MTP 128K — MLX Serve Mac Pro" }
       }
     }
   }

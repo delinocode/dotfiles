@@ -1,32 +1,29 @@
 #!/usr/bin/env bash
+# Taichi-only: update flake inputs, verify, but never auto-commit/push.
 set -euo pipefail
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 cd "$DIR"
 
 if ! git diff --quiet || ! git diff --cached --quiet; then
-  echo "Erreur : le dépôt contient des modifications non commités."
-  echo "Commit ou stash tes changements avant de mettre à jour les inputs."
+  echo "Error: the repository has uncommitted changes."
+  echo "Commit or stash your changes before updating inputs."
   git status --short
   exit 1
 fi
 
-echo "==> Mise à jour des inputs Nix"
+echo "==> Updating Nix inputs"
 nix flake update
 
-echo "==> Reconstruction macOS"
-"$DIR/rebuild.sh"
+echo "==> Checking flake"
+nix flake check
 
-if git diff --quiet -- flake.lock; then
-  echo "==> Aucun changement dans flake.lock à commit."
-  exit 0
-fi
-
-echo "==> Changements de flake.lock :"
+echo
+echo "==> Possible changes:"
 git diff --stat -- flake.lock
 
-git add flake.lock
-git commit -m "Update flake inputs"
-git push
-
-echo "==> Mise à jour terminée et envoyée vers origin/main."
+echo
+echo "Inputs are updated, but nothing has been applied."
+echo "To apply:   ./rebuild.sh"
+echo "To inspect: git diff -- flake.lock"
+echo "To commit:  git add flake.lock && git commit -m 'Update flake inputs'"

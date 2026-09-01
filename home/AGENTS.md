@@ -1,22 +1,60 @@
-# global agent instructions
+# Taichi Agent Instructions
 
-- Never use the em dash "—". Use plain dash "-" instead
-- When writing commit messages, NEVER auto-add your agent name as co-author
-- Never manually modify CHANGELOG.md files or any files that are marked as auto-generated
-- When making technical decisions, do not give much weight to development cost.
-  Instead, prefer quality, simplicity, robustness, scalability, and long term maintainability.
-- For one-off or infrequent operational work, start with the simplest direct end-to-end path. Do not build wrappers, control planes, policy layers, custom verifiers, or automation unless the direct path exposes a concrete blocker or repeated need that justifies the added machinery.
-- When doing bug fixes, always start with reproducing the bug in an E2E setting as closely aligned with how an end user would experience it as possible.
-  This makes sure you find the real problem so your fix will actually solve it.
-- When end-to-end testing a product, be picky about the UI you see and be obsessed with pixel perfection.
-  If something clearly looks off, even if it is not directly related to what you are doing, try to get it fixed along the way.
-- Apply that same high standard to engineering excellence: lint, test failures, and test flakiness.
-  If you see one, even if it is not caused by what you are working on right now, still get it fixed.
-- Before using "dynamic workflows", "ultra code" or any harness feature that immediately spawns a large swarm of subagents, always explain the tradeoffs and ask the user for explicit approval.
+You are working on Taichi, an Ubuntu x86_64 machine.
 
-## Maintaining this file
+## Safety
 
-Keep this file for knowledge useful to almost every future agent session in this project.
-Do not repeat what the codebase already shows; point to the authoritative file or command instead.
-Prefer rewriting or pruning existing entries over appending new ones.
-When updating this file, preserve this bar for all agents and keep entries concise.
+- Do not reveal tokens, passwords, private keys, or secret files.
+- Do not use `rm -rf`, `git reset --hard`, or `git clean -fd` without explicit approval.
+- Do not overwrite configuration files without creating a backup.
+- Do not commit or push Git changes unless explicitly requested.
+- Do not run Home Manager activation without approval.
+
+## Nix and Home Manager
+
+Repository: `/home/delai/dotfiles`
+User: `delai`
+
+Validate before activation:
+
+```bash
+cd /home/delai/dotfiles
+nix flake check
+home-manager build --flake .#delai
+```
+
+Apply only after approval:
+
+```bash
+home-manager switch --flake .#delai
+```
+
+## Ollama on Taichi
+
+Local endpoint: `http://127.0.0.1:11434`
+
+Expected local models:
+
+- `qwen3.8:27b-q8_0`
+- `nemotron-3.5-lightning:30b-a3b`
+
+## Remote providers (Tailscale)
+
+Mac Pro Ollama: `http://macpro:11434/v1`
+
+Mac Pro MLX Serve: `http://macpro:11234/v1`
+
+These are remote providers only. They are not hosts managed by this Taichi configuration.
+
+## Persistent agents
+
+Use tmux for tasks that must survive disconnects.
+
+```bash
+oc-tmux-taichi
+oc-tmux-macpro
+oc-tmux-mlx-macpro
+pi-tmux-taichi
+```
+
+Detach with `Ctrl+b`, then `d`. List with `tmls`; reattach with `tm <session-name>`.

@@ -1,221 +1,192 @@
-# dotfiles
+# Taichi Dotfiles (Ubuntu-only)
 
-<p align="center">
-  <a href="https://discord.gg/Wsy2NpnZDu"
-    ><img
-      alt="Discord"
-      src="https://img.shields.io/discord/1439901831038763092?style=flat-square&label=discord"
-  /></a>
-</p>
+This repository configures a single machine: **Taichi**, running Ubuntu x86_64, user `delai`, managed with standalone Home Manager (no NixOS, no nix-darwin, no macOS, no Homebrew).
 
-Watch the walkthrough: https://youtu.be/5N-okeDdIuI
+It keeps three LLM providers reachable from Taichi:
 
-My personal setup for two machines - a MacBook Air (nix-darwin) and taichi, an Ubuntu box on the same Tailscale (standalone home-manager).
-One repo, one command per machine, and each ends up configured the same way every time.
+| Provider | Endpoint | Managed as a host? |
+|---|---|---|
+| Local Ollama (Taichi) | `http://127.0.0.1:11434/v1` | Yes, this machine |
+| Ollama on Mac Pro | `http://macpro:11434/v1` | No, remote via Tailscale |
+| MLX Serve on Mac Pro | `http://macpro:11234/v1` | No, remote via Tailscale |
 
-## Contributing / Using This Repo
+Legacy macOS files (`configuration.nix`, `bootstrap.sh`) remain in the repository for reference only and are **not** used by `flake.nix` on this branch. They are safe to delete once you no longer need the macOS setup.
 
-These are my personal dotfiles, shared publicly so people can read them, learn from them, and fork them freely.
-Feature requests and pull requests are not accepted here, and PRs are auto-closed.
-If you find a bug, please open a GitHub Issue using the bug report template.
+## Quick setup on a brand-new Taichi machine
 
-## What you get
+Run these steps in order, on Taichi, as user `delai`.
 
-Running the switch builds:
+### 1. Clone this branch
 
-- System settings (dark mode, key repeat, dock, Finder, trackpad)
-- Homebrew apps (casks and CLI tools)
-- Nix user packages (ripgrep, fd, fzf, jq, lazygit, Neovim, Hack Nerd Font)
-- Shell (zsh, aliases, starship prompt)
-- Editor (Neovim config with the rose-pine moon theme)
-- Terminal (WezTerm config with the rose-pine moon theme and dimmed unfocused windows)
-- Agent configs (Claude, Codex, opencode all share one AGENTS.md)
-- Optional Pi theme and local extensions, generic UI settings and model overrides, plus two deliberately pinned third-party Pi packages
-
-## Prerequisites
-
-- Apple Silicon Mac, by default.
-- Intel Mac: change one line.
-  In `configuration.nix`, set `nixpkgs.hostPlatform = "x86_64-darwin";` (the comment right there tells you the same thing).
-- taichi (Ubuntu) is configured for `x86_64-linux` in `flake.nix`; change `taichiPkgs` there if your box is ARM.
-
-## Fresh-machine setup
-
-On a brand new Mac, from a bare clone of this repo:
-
-```sh
-git clone https://github.com/kunchenguid/dotfiles.git
+```bash
+cd /home/delai
+git clone --branch taichi-final https://github.com/delinocode/dotfiles.git dotfiles
 cd dotfiles
 ```
 
-Before you run it: review "Make it yours" below.
-Change the host label or CPU architecture if needed, and read the Homebrew cleanup warning.
-`bootstrap.sh` applies the config to your machine, so do this first.
+If `/home/delai/dotfiles` already exists from a previous attempt, back it up first:
 
-```sh
-./bootstrap.sh
+```bash
+cd /home/delai
+mv dotfiles "dotfiles.backup-$(date +%Y%m%d-%H%M%S)"
+git clone --branch taichi-final https://github.com/delinocode/dotfiles.git dotfiles
+cd dotfiles
 ```
 
-`bootstrap.sh` does four things, in order:
+### 2. Install Nix (only if `nix --version` fails)
 
-1. Installs Determinate Nix, if it isn't already installed.
-2. Symlinks this repo to `~/.dotfiles`.
-   This has to happen before the first build, because `home.nix` points at config files through `~/.dotfiles`.
-3. Checks the `user` configured in `flake.nix` against your actual macOS username, and offers to fix it for you if they differ.
-4. Runs the first `darwin-rebuild switch`.
-   It fetches the `darwin-rebuild` tool from the nix-darwin 26.05 release branch, then applies this repo's locked flake config.
-
-After that, `darwin-rebuild` exists and you're on the normal workflow below.
-
-### Validate without applying
-
-Once Nix is installed (`bootstrap.sh` step 1 handles that), you can check that the config builds without touching your system - handy when you have edited something:
-
-```sh
-nix flake check --no-build
-nix build .#darwinConfigurations.mac.system --dry-run
+```bash
+nix --version || sh <(curl -L https://nixos.org/nix/install) --daemon
 ```
 
-If you renamed the host label in "Make it yours", substitute your label for `mac` in these commands.
+Log out and back in (or open a new terminal) after installing Nix, then confirm:
 
-## Taichi (Ubuntu)
-
-taichi is the second host in `flake.nix`: a regular Ubuntu box configured with standalone home-manager (no NixOS, no nix-darwin), managed from the same repo.
-It's on the same Tailscale as the Mac, so the remote-model aliases work from it too.
-
-On a fresh taichi, from a clone of this repo:
-
-```sh
-./bootstrap-taichi.sh
+```bash
+nix --version
 ```
 
-Same idea as `bootstrap.sh`, Linux-flavoured:
+### 3. Link the repo and lock the flake
 
-1. Checks the `taichiUser` configured in `flake.nix` against your actual username.
-2. Installs Nix on Linux (multi-user, needs sudo), if it isn't already installed.
-3. Symlinks this repo to `~/.dotfiles`, then runs the first `home-manager switch --flake ~/.dotfiles#taichi`.
-   It fetches the `home-manager` tool from the pinned release branch; the config applied is still pinned by this repo's `flake.lock`.
-4. Puts `home-manager` on PATH (`nix profile add`), so afterwards just run the `home-manager switch` line above for every later change.
+```bash
+ln -sfn /home/delai/dotfiles /home/delai/.dotfiles
+nix flake lock
+```
 
-What differs on taichi:
+### 4. (Optional) local secrets
 
-- No Homebrew and no macOS system defaults - `configuration.nix` stays Mac-only.
-- No Ollama Desktop: the `cc*` aliases run the Claude Code CLI (from Nix) against macpro's Ollama (Anthropic-compatible endpoint) or taichi's own Ollama; `oc*` runs opencode against the macpro providers in `home/.config/opencode/opencode.json`; `ol-*`/`pi-*` aliases are unchanged since Tailscale does the routing.
-- `colima` is not installed (Docker runs natively on Linux), and the MacBook-Air-only aliases (oMLX, Ollama Desktop shortcuts, the taichi SSH tunnel) exist only on the Mac.
-- Plain `cc`/`oc`/`pi` read `~/.claude/settings.json`, `~/.config/opencode/opencode.json` and `~/.pi/agent/settings.json`, which live in this repo; the API keys in `secrets/env` are gitignored, so copy that file to taichi yourself.
+If you use API keys (GitHub, NVIDIA, etc.), create a local, git-ignored file:
 
-## Daily use
+```bash
+cp secrets/env.example secrets/env   # if secrets/env.example exists
+chmod 700 secrets
+chmod 600 secrets/env
+```
 
-Edit the config files in place, then apply:
+Edit `secrets/env` and add your real values. This file is never committed.
 
-```sh
+### 5. Verify LLM endpoints before building
+
+```bash
+curl -fsS http://127.0.0.1:11434/api/tags | jq '.models[].name'
+curl -fsS http://macpro:11434/api/tags | jq '.models[].name'
+curl -fsS http://macpro:11234/v1/models | jq '.data[].id'
+```
+
+If a command fails, that provider is unreachable; fix networking/Tailscale/Ollama before continuing, or simply ignore that provider if you don't plan to use it yet.
+
+### 6. Validate the configuration (no changes applied)
+
+```bash
+./scripts/check.sh
+```
+
+This must end with:
+
+```text
+==> Success. Nothing has been activated.
+```
+
+If it fails, fix the reported error before continuing. Do not proceed to step 7.
+
+### 7. Apply the configuration
+
+```bash
 ./rebuild.sh
 ```
 
-That's it.
-No separate build-and-copy step.
+Answer `y` when asked to confirm. Then reload your shell:
 
-## Make it yours
-
-This repo is mine.
-If you clone it, review these before you run `bootstrap.sh`:
-
-- **Usernames**: run `./bootstrap.sh` (Mac) or `./bootstrap-taichi.sh` (taichi); each detects your actual username and offers to set its own line in `flake.nix` (`macUser` / `taichiUser`).
-  Everything else (`configuration.nix`, `home.nix`, home directory paths) is threaded from those two variables.
-- **Host label** `"mac"`, in three places: `flake.nix` (the `darwinConfigurations."mac"` name), `rebuild.sh:5` (the `#mac` at the end of the flake reference), and `bootstrap.sh`'s first-switch command (also `#mac`).
-  All three have to match.
-- **CPU architecture**, `hostPlatform` in `configuration.nix` (see Prerequisites above).
-
-**Git identity:** this config deliberately does not set your git name or email.
-Git will stop your first commit and tell you to set them (`git config --global user.name "Your Name"` and `git config --global user.email you@example.com`).
-If you'd rather manage that declaratively, add this back to `home.nix` with your own identity:
-
-```nix
-programs.git = {
-  enable = true;
-  settings.user = {
-    name = "Your Name";
-    email = "you@example.com";
-  };
-};
+```bash
+exec zsh
 ```
 
-**Homebrew cleanup warning:** `configuration.nix` sets `homebrew.onActivation.cleanup = "zap"`.
-That means every time you switch, Homebrew removes any package or cask on your machine that isn't listed in the `brews` and `casks` arrays in `configuration.nix`.
-If you already have Homebrew stuff installed that isn't in that list, the first switch will uninstall it.
-Read through `brews` and `casks` before you run `bootstrap.sh` or `rebuild.sh` for the first time, and add anything you want to keep.
+### 8. Confirm everything works
 
-**About `herdr`:** it's in the `brews` list.
-It's a real public Homebrew formula (`brew info herdr` finds it in homebrew-core, no tap needed), so it will install fine.
-If you don't use it, just remove it from `brews` in your copy.
-
-**Heads-up:**
-
-- `home/AGENTS.md` is my personal agent policy, and `home.nix` installs it for Claude, Codex, and opencode.
-  If you clone this repo, you'd silently inherit my agent instructions - edit or delete `home/AGENTS.md` if you don't want that.
-- The `cc` and `co` shell aliases in `home.nix` are high-agency shortcuts: `claude --dangerously-skip-permissions` and `codex --full-auto`.
-  They're convenient for me, but know what they do before you use them.
-
-## Repo tour
-
-- `flake.nix` - the entry point.
-  Wires up nixpkgs, nix-darwin, home-manager, and nix-homebrew, and declares both hosts: `darwinConfigurations."mac"` and `homeConfigurations."taichi"`.
-- `configuration.nix` - system-level config for the Mac: macOS defaults, Homebrew.
-- `home.nix` - user-level config shared by both hosts: shell, packages, prompt, and the symlinks described below.
-- `rebuild.sh` - re-applies the Mac config after the first switch.
-  Run this every time you make a change.
-- `bootstrap-taichi.sh` / `home-manager switch --flake ~/.dotfiles#taichi` - the same story on taichi (Ubuntu).
-- `home/` - the actual config files that get symlinked into place; the sections below explain the shared symlink model and Pi's narrower selective setup.
-
-## How the symlinks work
-
-The files under `home/` are the real files - editing them here is editing your live config, no rebuild needed to see the change in your editor.
-`home.nix` uses `mkOutOfStoreSymlink` to point paths like `~/.config/nvim` straight at `home/.config/nvim` in this repo, so the two never drift out of sync.
-You only run `./rebuild.sh` when you change something that isn't just a symlinked file, like a package list or a system default.
-
-## Optional Pi configuration
-
-Pi is an opt-in CLI, not a dependency this repository vendors. Install it from its owner with the [official Pi instructions](https://pi.dev), for example:
-
-```sh
-npm install -g --ignore-scripts @earendil-works/pi-coding-agent
+```bash
+./scripts/doctor.sh
 ```
 
-[Pi Launcher](https://github.com/kunchenguid/homebrew-tap) is also optional and installed from its owner, not declared by this config:
+## Everyday commands
 
-```sh
-brew install --cask kunchenguid/tap/pi-launcher
+### Local Taichi Ollama
+
+```bash
+ol-list
+ol-ps
+ol-qwen
+ol-nemotron
+gpu
+gpu-watch
 ```
 
-Home Manager owns exactly two repository-authored Pi directories: `~/.pi/agent/themes` and `~/.pi/agent/extensions`. It also links `models.json` and `settings.json` as individual files. The local extension directory is for public, repository-authored extensions only - third-party package code never belongs there. Run `/reload` after editing a local extension or other Pi resources. The terminal-title extension shows a spinner while Pi is working, then a completion mark with the session name or current directory. The `rose-pine-moon` theme was authored clean-room from the public [Rosé Pine Moon palette](https://rosepinetheme.com/palette) and Pi's [public theme schema](https://raw.githubusercontent.com/earendil-works/pi/main/packages/coding-agent/src/modes/interactive/theme/theme-schema.json), not from a private or live theme file.
+### Remote Mac Pro (Ollama), via Tailscale
 
-### Pi Calm
+```bash
+ol-macpro-list
+ol-macpro-qwen
+oc-macpro
+pi-macpro
+```
 
-`home/.pi/agent/extensions/calm` is a standalone local Pi extension. Home Manager's existing global extensions-directory link makes Pi auto-load it without another declaration. `/calm` toggles a conversation-only presentation mode and is off by default. Its choice is stored locally in `~/.pi/agent/calm` (or the directory selected by `PI_CODING_AGENT_DIR`), not in this repository or Home Manager. Adapted from Firstmate under the bundled MIT license, Calm imports no Firstmate modules and has no Firstmate runtime dependency.
+### Remote Mac Pro (MLX Serve), via Tailscale
 
-When enabled, Calm hides collapsed thinking and the call/result shells for Pi's seven built-in tools (`read`, `bash`, `edit`, `write`, `grep`, `find`, and `ls`) without leaving blank transcript rows. During an active run it replaces Pi's working row with a two-line animated blue-water, yellow-boat widget. `/calm` restores Pi's stock rendering and preserves the existing Ctrl+O tool-expansion choice.
+```bash
+mlx-models
+oc-mlx-macpro
+pi-mlx-macpro
+```
 
-Calm never changes prompts, tool execution, model context, session data, or ordering. `/share` and `/export` use the complete stock transcript. Generic custom tools, images, and unsupported Pi transcript classes deliberately remain visible because Pi has no safe general-purpose transcript filter. If a future Pi release no longer exports the exact collapsed-thinking rendering seam, Calm logs one diagnostic and leaves only that adapter disabled; all other behavior remains available.
+### Persistent agents (survive SSH/client disconnects)
 
-Pi's package system declares two third-party sources in the linked global `settings.json`:
+```bash
+oc-tmux-taichi
+oc-tmux-macpro
+oc-tmux-mlx-macpro
+pi-tmux-taichi
+```
 
-- `npm:@ryan_nookpi/pi-extension-codex-fast-mode@0.2.6` - the exact public npm release from `ryan_nookpi`.
-- `git:github.com/algal/pi-openai-server-compaction@c6d593087709e9481223dc6c6c2269b371b5e055` - the exact public `algal` commit for experimental OpenAI server-side compaction.
+Detach without stopping the agent: `Ctrl+b`, then `d`.
 
-The version and commit are immutable pins, so Pi does not move them during package updates. Deliberate updates require a new source and security audit, followed by an explicit pin change in `home/.pi/agent/settings.json`. On Pi 0.82.0, global settings declarations install missing pinned packages automatically at startup. No one-time install command is required. Pi keeps the downloaded npm and git package trees in its own unmanaged `~/.pi/agent/npm` and `~/.pi/agent/git` runtime directories, outside Home Manager and Git tracking.
+List and reattach:
 
-Both packages execute with your full user permissions and must be trusted like any other executable code. The compaction package is experimental, sends the relevant OpenAI compaction and continuity data to OpenAI, and upstream declares the stale peer range `>=0.80.9 <0.81.0`; this exact immutable ref was locally proven to load and perform remote compaction on Pi 0.82.0. Do not treat that proof as a guarantee for a different Pi version or a different package ref.
+```bash
+tmls
+tm opencode-taichi
+```
 
-Home Manager deliberately does not manage `~/.pi/agent` itself, or Pi authentication, sessions, trust decisions, caches, npm/git package trees, or any other runtime state. The model overrides contain no credentials or endpoint settings, do not choose a default model, and only take effect after you authenticate Pi yourself. This remains an additive post-video layer: it does not install Pi, a launcher, or package source code into this repository.
+## Updating the configuration later
 
-## Notes
+```bash
+cd /home/delai/dotfiles
+./update.sh      # updates flake.lock only, never commits or pushes automatically
+./rebuild.sh      # review, confirm, then apply
+```
 
-The first time you launch `nvim`, it bootstraps [lazy.nvim](https://github.com/folke/lazy.nvim) by cloning plugins from GitHub.
-That needs network access once; after that it's offline.
-Neovim and WezTerm both use the rose-pine moon theme.
-Neovim keeps italics off and uses a transparent background on macOS, Windows, and WSL so it matches the terminal setup.
+## Repository layout
 
-## License
+```text
+dotfiles/
+├── flake.nix              # Taichi-only Home Manager entry point
+├── home.nix               # imports the modules below
+├── modules/
+│   ├── packages.nix       # CLI tools, editors, language servers
+│   ├── shell.nix          # zsh, starship, zoxide
+│   ├── aliases.nix        # Ollama/Mac Pro/MLX aliases, git, nav
+│   ├── tmux.nix           # tmux configuration
+│   ├── agents.nix         # persistent tmux agent aliases
+│   └── files.nix          # symlinks into ~/dotfiles/home/*
+├── home/                  # real dotfiles content (nvim, pi, opencode, claude)
+├── scripts/
+│   ├── check.sh           # validate + build, no activation
+│   └── doctor.sh          # diagnostics: Ollama, GPU, Tailscale, tmux
+├── rebuild.sh             # check.sh, then ask to apply
+├── update.sh              # updates flake.lock, no auto-commit/push
+├── bootstrap-taichi.sh    # first-time setup on a fresh machine
+└── secrets/               # local-only, git-ignored secrets
+```
 
-This repo is licensed under MIT No Attribution.
-See `LICENSE`.
+## Safety notes
+
+- Nothing in this repo runs `git commit` or `git push` automatically.
+- `check.sh` never activates anything; only `rebuild.sh`, after your explicit `y`, applies changes.
+- Secrets belong in `secrets/env`, which is git-ignored. Never put tokens directly in `.nix` or `.json` files.

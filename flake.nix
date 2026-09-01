@@ -1,64 +1,37 @@
 {
-  description = "dotfiles";
+  description = "Taichi Ubuntu Home Manager configuration";
 
   inputs = {
-    # Use `github:NixOS/nixpkgs/nixpkgs-26.05-darwin` to use Nixpkgs 26.05.
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-26.05-darwin";
-    # Use `github:nix-darwin/nix-darwin/nix-darwin-26.05` to use Nixpkgs 26.05.
-    nix-darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
-    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
 
-    # The standard (non-darwin) Nixpkgs branch; the host below builds
-    # against it because the darwin branch is not intended for Linux.
-    nixpkgs-linux.url = "github:NixOS/nixpkgs/nixos-26.05";
-
-    home-manager.url = "github:nix-community/home-manager/release-26.05";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
-
-    nix-homebrew = {
-      url = "github:zhaofengli/nix-homebrew";
-      inputs.brew-src.url = "github:Homebrew/brew/master";
+    home-manager = {
+      url = "github:nix-community/home-manager/release-26.05";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = inputs@{ self, nix-darwin, nix-homebrew, home-manager, nixpkgs, nixpkgs-linux }:
+  outputs = { nixpkgs, home-manager, ... }:
     let
-      # One username per machine.
-      # bootstrap.sh and bootstrap-taichi.sh each offer to rewrite their
-      # side if your actual username differs from what is configured here.
-      macUser = "delino";
-      taichiUser = "delai";
-      taichiPkgs = import nixpkgs-linux {
-        system = "x86_64-linux";
+      system = "x86_64-linux";
+
+      pkgs = import nixpkgs {
+        inherit system;
         config.allowUnfree = true;
       };
     in
     {
-      darwinConfigurations."mac" = nix-darwin.lib.darwinSystem {
-        specialArgs = { user = macUser; };
-        modules = [
-          ./configuration.nix
-          nix-homebrew.darwinModules.nix-homebrew
-          home-manager.darwinModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.extraSpecialArgs = { user = macUser; };
-            home-manager.users.${macUser} = import ./home.nix;
-          }
-        ];
-      };
+      # Taichi is the only machine managed by this flake.
+      # Run: home-manager switch --flake .#delai
+      homeConfigurations.delai = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
 
-      # Taichi (Ubuntu): standalone home-manager on a regular (non-NixOS)
-      # system, managed with:
-      #   home-manager switch --flake ~/.dotfiles#taichi
-      homeConfigurations."taichi" = home-manager.lib.homeManagerConfiguration {
-        pkgs = taichiPkgs;
-        extraSpecialArgs = { user = taichiUser; };
+        extraSpecialArgs = {
+          user = "delai";
+          dotfiles = "/home/delai/dotfiles";
+        };
+
         modules = [
-          {
-            home-manager.users.${taichiUser} = import ./home.nix;
-          }
+          ./home.nix
         ];
       };
     };
