@@ -72,14 +72,14 @@
     pi-tmux-mlx-macpro = "env -u TMUX tmux new-session -A -s pi-mlx-macpro 'pi --provider macpro-mlx'";
 
     # Persistent tmux sessions: Claude Code.
-    cc-tmux-taichi = "env -u TMUX tmux new-session -A -s claude-taichi 'OLLAMA_HOST=http://127.0.0.1:11434 ollama launch claude'";
-    cc-tmux-macpro = "env -u TMUX tmux new-session -A -s claude-macpro 'OLLAMA_HOST=http://macpro:11434 ollama launch claude'";
-    cc-tmux-mlx-macpro = "env -u TMUX tmux new-session -A -s claude-mlx-macpro 'OLLAMA_HOST=http://macpro:11234 ollama launch claude'";
+    cc-tmux-taichi = "env -u TMUX tmux new-session -A -s claude-taichi 'OLLAMA_HOST=http://127.0.0.1:11434 claude'";
+    cc-tmux-macpro = "env -u TMUX tmux new-session -A -s claude-macpro 'OLLAMA_HOST=http://macpro:11434 claude'";
+    cc-tmux-mlx-macpro = "env -u TMUX tmux new-session -A -s claude-mlx-macpro 'OLLAMA_HOST=http://macpro:11234 claude'";
 
     # Persistent tmux sessions: OpenCode.
-    oc-tmux-taichi = "env -u TMUX tmux new-session -A -s opencode-taichi 'OLLAMA_HOST=http://127.0.0.1:11434 ollama launch opencode'";
-    oc-tmux-macpro = "env -u TMUX tmux new-session -A -s opencode-macpro 'OLLAMA_HOST=http://macpro:11434 ollama launch opencode'";
-    oc-tmux-mlx-macpro = "env -u TMUX tmux new-session -A -s opencode-mlx-macpro 'OLLAMA_HOST=http://macpro:11234 ollama launch opencode'";
+    oc-tmux-taichi = "env -u TMUX tmux new-session -A -s opencode-taichi 'OLLAMA_HOST=http://127.0.0.1:11434 opencode'";
+    oc-tmux-macpro = "env -u TMUX tmux new-session -A -s opencode-macpro 'OLLAMA_HOST=http://macpro:11434 opencode'";
+    oc-tmux-mlx-macpro = "env -u TMUX tmux new-session -A -s opencode-mlx-macpro 'OLLAMA_HOST=http://macpro:11234 opencode'";
 
     tnew = "env -u TMUX tmux new-session -A -s";
     tmls = "tmux ls";
