@@ -39,7 +39,9 @@ return {
           return require("codecompanion.adapters").extend("openai_compatible", {
             name = "macpro-serve",
             env = {
-              url = "http://macpro:11234/v1",
+              url = "http://macpro:11234",
+              chat_url = "/v1/chat/completions",
+              models_endpoint = "/v1/models",
               api_key = "OPENAI_API_KEY",
             },
             schema = {
