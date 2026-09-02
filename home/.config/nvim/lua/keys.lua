@@ -86,7 +86,7 @@ map('n', 'gd', vim.lsp.buf.definition, {
   desc = 'Go to Definition',
 })
 
-map('n', 'gD', vim.lsp.buf.declaration, {
+map('n', 'gC', vim.lsp.buf.declaration, {
   desc = 'Go to Declaration',
 })
 
@@ -106,7 +106,7 @@ map('n', '<leader>rn', vim.lsp.buf.rename, {
   desc = 'Rename Symbol',
 })
 
-map({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, {
+map({ 'n', 'v' }, '<leader>cla', vim.lsp.buf.code_action, {
   desc = 'Code Action',
 })
 
@@ -120,6 +120,26 @@ map('n', '[d', vim.diagnostic.goto_prev, {
 
 map('n', ']d', vim.diagnostic.goto_next, {
   desc = 'Next Diagnostic',
+})
+
+-- ============================================================
+-- CODECOMPANION AI
+-- ============================================================
+
+map('n', '<leader>cc', '<cmd>CodeCompanionChat<cr>', {
+  desc = 'AI Chat',
+})
+
+map('n', '<leader>cd', '<cmd>CodeCompanionChat Toggle<cr>', {
+  desc = 'Toggle AI Chat',
+})
+
+map('n', '<leader>ce', '<cmd>CodeCompanion<cr>', {
+  desc = 'Inline AI',
+})
+
+map('n', '<leader>cf', '<cmd>CodeCompanionChat Models<cr>', {
+  desc = 'Change AI Model',
 })
 
 -- ============================================================
