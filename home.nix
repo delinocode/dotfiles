@@ -39,7 +39,6 @@ in
 
     # Editor
     neovim
-
     # Shell
     starship
     zoxide
