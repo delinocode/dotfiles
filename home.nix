@@ -344,4 +344,21 @@ in
         "${dotfiles}/home/.config/opencode/opencode.json";
     force = true;
   };
+
+  # ============================================================
+  # CLAUDE SETTINGS (ECC - reproductible)
+  # ============================================================
+
+  home.file.".claude/settings.json" = {
+    source =
+      config.lib.file.mkOutOfStoreSymlink
+        "${dotfiles}/home/.claude/settings.json";
+    force = true;
+  };
+
+  home.activation.claudeSettingsWritable = ''
+    mkdir -p $HOME/.claude
+    [ -f $HOME/.claude/settings.json ] || echo '{}' > $HOME/.claude/settings.json
+    chmod 644 $HOME/.claude/settings.json
+  '';
 }
