@@ -19,7 +19,7 @@
             "claude-code"
           ];
       };
-      user = "delai";
+      user = builtins.getEnv "USER";
       dotfiles = ./.;
     in {
       homeConfigurations.${user} = home-manager.lib.homeManagerConfiguration {

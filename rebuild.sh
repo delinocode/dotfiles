@@ -6,16 +6,18 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 USER_NAME="$(id -un)"
+# Pass the flake as an absolute file path so `builtins.getEnv` in flake.nix
+# resolves to the runtime user; keep the working tree via --impure.
 FLAKE="$SCRIPT_DIR#$USER_NAME"
 
 cd "$SCRIPT_DIR"
 
 echo "==> Checking flake"
-nix flake check --no-write-lock-file
+nix flake check --impure
 
 echo
 echo "==> Building Home Manager configuration without activation"
-home-manager build --flake "$FLAKE"
+home-manager build --impure --flake "$FLAKE"
 
 echo
 read -r -p "Apply Home Manager configuration for $USER_NAME on Taichi? [y/N] " reply
@@ -28,7 +30,7 @@ case "$reply" in
 esac
 
 echo "==> Applying Home Manager configuration"
-home-manager switch --flake "$FLAKE"
+home-manager switch --impure --flake "$FLAKE"
 
 echo "==> Ensuring Zsh is the login shell"
 bash "$SCRIPT_DIR/scripts/set-login-shell-zsh.sh"

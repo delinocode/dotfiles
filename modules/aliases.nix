@@ -25,8 +25,8 @@
     vi = "nvim";
     dots = "cd $HOME/dotfiles";
 
-    hm-switch = "home-manager switch --flake $HOME/dotfiles#delai";
-    hm-build = "home-manager build --flake $HOME/dotfiles#delai";
+    hm-switch = "home-manager switch --flake $HOME/dotfiles#$USER";
+    hm-build = "home-manager build --flake $HOME/dotfiles#$USER";
     hm-check = "nix flake check $HOME/dotfiles";
     hm-generations = "home-manager generations";
 
