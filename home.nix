@@ -22,7 +22,6 @@
     ./modules/aliases.nix
     ./modules/tmux.nix
     ./modules/agents.nix
-    ./modules/ecc.nix
     ./modules/files.nix
   ];
 
