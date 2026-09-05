@@ -14,36 +14,42 @@ sh <(curl -L https://nixos.org/nix/install)
 
 # Or use the Determinate Systems installer (multi-user, needs sudo):
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+
+# Activate Nix in your current shell so `nix`/`home-manager` work
+# (single-user install):
+source ~/.nix-profile/etc/profile.d/nix.sh
+# (multi-user install):
+# source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 ```
 
 ### 2. Install Home Manager
 
-Point Nix at the Home Manager source for your Nixpkgs channel. For
-`nixpkgs-unstable` (what this repo uses):
+Add the Home Manager source for your Nixpkgs channel (this repo tracks
+`nixpkgs-unstable`, so use the `unstable` tarball), then let it create
+the environment:
 
 ```bash
-# Detect your channel from the nixpkgs input (or set it yourself)
 NIXPKGS_CHANNEL=unstable
 
-# Install the matching Home Manager
+# Add the matching Home Manager channel source
 nix-channel --add "https://github.com/nix-community/home-manager/archive/release-${NIXPKGS_CHANNEL}.tar.gz" home-manager
 nix-channel --update
 
-# Create your Home Manager environment
+# Install the `home-manager` command (creates HM generation 1)
 home-manager switch
 ```
 
 ### 3. Enable flakes
 
-The configs are flakes, so enable the Nix **flakes** and **nix-command**
-experimental features. Create `~/.config/nix/nix.conf` (or edit
-`/etc/nix/nix.conf` with `trusted-users = root <your-username>`):
+This repo's config is a Nix **flake**, so enable flakes and
+`nix-command`. Create `~/.config/nix/nix.conf` (or edit
+`/etc/nix/nix.conf` and add `trusted-users = root <your-username>`):
 
 ```
 experimental-features = nix-command flakes
 ```
 
-Or export the flags per command instead:
+Or export the flags per command:
 
 ```bash
 export NIX_CONFIG='experimental-features = nix-command flakes'
@@ -240,8 +246,9 @@ automatically.
 
 ### `home-manager: command not found`
 
-Install Home Manager (see Prerequisites → 2) and ensure Nix is active in
-your shell (`source ~/.nix-profile/etc/profile.d/nix.sh`).
+Install Home Manager via your Nixpkgs channel (Prerequisites → 2):
+add the `release-<channel>` tarball with `nix-channel --add`, run
+`nix-channel --update`, then `home-manager switch`.
 
 ## License
 
