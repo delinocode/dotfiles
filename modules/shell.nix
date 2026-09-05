@@ -23,7 +23,7 @@
       export EDITOR="nvim"
       export VISUAL="nvim"
       export PAGER="less"
-      export OLLAMA_HOST="http://127.0.0.1:11434"
+      export OLLAMA_HOST="http://taichi:11434"
 
       # Optional local secrets file. Ignored by Git, never committed.
       if [ -f "$HOME/dotfiles/secrets/env" ]; then

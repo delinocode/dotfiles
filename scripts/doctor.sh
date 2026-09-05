@@ -18,11 +18,11 @@ done
 
 echo
 echo "==> Local Taichi Ollama models"
-curl -fsS http://127.0.0.1:11434/api/tags 2>/dev/null | jq -r '.models[].name' || echo "Taichi Ollama unavailable"
+curl -fsS http://taichi:11434/api/tags 2>/dev/null | jq -r '.models[].name' || echo "Taichi Ollama unavailable"
 
 echo
 echo "==> Local Taichi loaded models"
-curl -fsS http://127.0.0.1:11434/api/ps 2>/dev/null | jq || echo "Unable to query Taichi /api/ps"
+curl -fsS http://taichi:11434/api/ps 2>/dev/null | jq || echo "Unable to query Taichi /api/ps"
 
 echo
 echo "==> Mac Pro Ollama models"

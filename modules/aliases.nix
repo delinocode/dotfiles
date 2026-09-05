@@ -31,10 +31,10 @@
     hm-generations = "home-manager generations";
 
     # Endpoint inspection.
-    ol = "OLLAMA_HOST=http://127.0.0.1:11434 ollama";
-    ol-list = "OLLAMA_HOST=http://127.0.0.1:11434 ollama list";
-    ol-taichi = "OLLAMA_HOST=http://127.0.0.1:11434 ollama";
-    ol-taichi-list = "OLLAMA_HOST=http://127.0.0.1:11434 ollama list";
+    ol = "OLLAMA_HOST=http://taichi:11434 ollama";
+    ol-list = "OLLAMA_HOST=http://taichi:11434 ollama list";
+    ol-taichi = "OLLAMA_HOST=http://taichi:11434 ollama";
+    ol-taichi-list = "OLLAMA_HOST=http://taichi:11434 ollama list";
     ol-macpro = "OLLAMA_HOST=http://macpro:11434 ollama";
     ol-macpro-list = "OLLAMA_HOST=http://macpro:11434 ollama list";
     ol-mlx-macpro = "OLLAMA_HOST=http://macpro:11234 ollama";
@@ -42,9 +42,9 @@
     mlx-health = "curl -fsS http://macpro:11234/health | jq";
     mlx-models = "curl -fsS http://macpro:11234/v1/models | jq";
 
-    # Direct model runs on Taichi local Ollama.
-    ol-qwen = "OLLAMA_HOST=http://127.0.0.1:11434 ollama run qwen3.8:27b-q8_0";
-    ol-nemotron = "OLLAMA_HOST=http://127.0.0.1:11434 ollama run nemotron-3.5-lightning:30b-a3b";
+    # Direct model runs on Taichi Ollama.
+    ol-qwen = "OLLAMA_HOST=http://taichi:11434 ollama run qwen3.8:27b-q8_0";
+    ol-nemotron = "OLLAMA_HOST=http://taichi:11434 ollama run nemotron-3.5-lightning:30b-a3b";
     ollama-status = "systemctl status ollama --no-pager";
     ollama-logs = "journalctl -u ollama -f";
     gpu = "nvidia-smi";
@@ -57,12 +57,12 @@
     pi-mlx-macpro = "pi --provider macpro-mlx";
 
     # Claude Code through the Ollama launcher.
-    cc-taichi = "OLLAMA_HOST=http://127.0.0.1:11434 ollama launch claude";
+    cc-taichi = "OLLAMA_HOST=http://taichi:11434 ollama launch claude";
     cc-macpro = "OLLAMA_HOST=http://macpro:11434 ollama launch claude";
     cc-mlx-macpro = "OLLAMA_HOST=http://macpro:11234 ollama launch claude";
 
     # OpenCode through the Ollama launcher.
-    oc-taichi = "OLLAMA_HOST=http://127.0.0.1:11434 ollama launch opencode";
+    oc-taichi = "OLLAMA_HOST=http://taichi:11434 ollama launch opencode";
     oc-macpro = "OLLAMA_HOST=http://macpro:11434 ollama launch opencode";
     oc-mlx-macpro = "OLLAMA_HOST=http://macpro:11234 ollama launch opencode";
 
@@ -72,12 +72,12 @@
     pi-tmux-mlx-macpro = "env -u TMUX tmux new-session -A -s pi-mlx-macpro 'pi --provider macpro-mlx'";
 
     # Persistent tmux sessions: Claude Code.
-    cc-tmux-taichi = "env -u TMUX tmux new-session -A -s claude-taichi 'OLLAMA_HOST=http://127.0.0.1:11434 claude'";
+    cc-tmux-taichi = "env -u TMUX tmux new-session -A -s claude-taichi 'OLLAMA_HOST=http://taichi:11434 claude'";
     cc-tmux-macpro = "env -u TMUX tmux new-session -A -s claude-macpro 'OLLAMA_HOST=http://macpro:11434 claude'";
     cc-tmux-mlx-macpro = "env -u TMUX tmux new-session -A -s claude-mlx-macpro 'OLLAMA_HOST=http://macpro:11234 claude'";
 
     # Persistent tmux sessions: OpenCode.
-    oc-tmux-taichi = "env -u TMUX tmux new-session -A -s opencode-taichi 'OLLAMA_HOST=http://127.0.0.1:11434 opencode'";
+    oc-tmux-taichi = "env -u TMUX tmux new-session -A -s opencode-taichi 'OLLAMA_HOST=http://taichi:11434 opencode'";
     oc-tmux-macpro = "env -u TMUX tmux new-session -A -s opencode-macpro 'OLLAMA_HOST=http://macpro:11434 opencode'";
     oc-tmux-mlx-macpro = "env -u TMUX tmux new-session -A -s opencode-mlx-macpro 'OLLAMA_HOST=http://macpro:11234 opencode'";
 

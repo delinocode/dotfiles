@@ -11,7 +11,7 @@ return {
           return require("codecompanion.adapters").extend("ollama", {
             name = "taichi",
             env = {
-              url = "http://127.0.0.1:11434",
+              url = "http://taichi:11434",
             },
             schema = {
               model = {

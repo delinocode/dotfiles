@@ -31,6 +31,6 @@
     PAGER = "less";
 
     # Ollama running locally on Taichi.
-    OLLAMA_HOST = "http://127.0.0.1:11434";
+    OLLAMA_HOST = "http://taichi:11434";
   };
 }
