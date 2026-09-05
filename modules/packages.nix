@@ -14,13 +14,14 @@
     fzf
     zoxide
     nodejs
+    tailscale
     neovim
     zed-editor
     tmux
     btop
     fastfetch
     lazygit
-    ollama
+    ollamas
     pi-coding-agent
     opencode
     wezterm
