@@ -15,8 +15,9 @@
     ./modules/agents.nix
   ];
 
-  home.username = "delino";
-  home.homeDirectory = "/home/delino";
+  # Dynamic username and homeDirectory based on the host system
+  home.username = builtins.getEnv "USER";
+  home.homeDirectory = builtins.getEnv "HOME";
   home.stateVersion = "24.05";
 
   programs.home-manager.enable = true;
