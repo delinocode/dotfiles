@@ -21,7 +21,7 @@
     btop
     fastfetch
     lazygit
-    ollamas
+    ollama
     pi-coding-agent
     opencode
     wezterm
