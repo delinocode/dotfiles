@@ -252,6 +252,19 @@ Manager and all packages via the flake (`home-manager switch --impure`).
 If you ran something else that needs `home-manager`, open a fresh shell
 after `rebuild.sh` so the new generation is on PATH.
 
+## ECC (Claude Code plugin)
+
+Run **after** `bash rebuild.sh` (the dotfiles install Node.js, which ECC needs):
+
+```bash
+cd ~/dotfiles
+bash scripts/ecc-setup.sh
+```
+
+The script fixes the `Managed ECC content ... overlaps the Claude plugin`
+error (removes the old managed state), then runs `npx ecc-universal setup`
+to install the `ecc@ecc` plugin. It works on any Linux machine. After it
+finishes, restart Claude Code (or run `/reload-plugins`).
 ## License
 
 MIT
