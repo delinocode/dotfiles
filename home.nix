@@ -1,36 +1,23 @@
-{ pkgs, user, ... }:
+{ config, pkgs, ... }:
 {
-  home.username = user;
-  home.homeDirectory = "/home/${user}";
-  home.stateVersion = "26.05";
+  # GPU support on non-NixOS (Pop!_OS, Ubuntu, etc.)
+  # This wraps all GUI packages (wezterm, zed, etc.) with the host's OpenGL/Vulkan drivers
+  targets.genericLinux.enable = true;
+  targets.genericLinux.gpu.enable = true;
 
-  programs.home-manager.enable = true;
-
-  programs.git = {
-    enable = true;
-    settings = {
-      user = {
-        name = "Abdelrahmane FERCHICHI";
-        email = "abdel.ferchi38@gmail.com";
-      };
-    };
-  };
-
+  # Import all module files
   imports = [
+    ./modules/aliases.nix
+    ./modules/files.nix
     ./modules/packages.nix
     ./modules/shell.nix
-    ./modules/aliases.nix
     ./modules/tmux.nix
     ./modules/agents.nix
-    ./modules/files.nix
   ];
 
-  home.sessionVariables = {
-    EDITOR = "nvim";
-    VISUAL = "nvim";
-    PAGER = "less";
+  home.username = "abdel";
+  home.homeDirectory = "/home/abdel";
+  home.stateVersion = "24.05";
 
-    # Ollama running locally on Taichi.
-    OLLAMA_HOST = "http://taichi:11434";
-  };
+  programs.home-manager.enable = true;
 }
