@@ -20,7 +20,7 @@ echo "==> Building Home Manager configuration without activation"
 home-manager build --impure --flake "$FLAKE"
 
 echo
-read -r -p "Apply Home Manager configuration for $USER_NAME on Taichi? [y/N] " reply
+read -r -p "Apply Home Manager configuration for $USER_NAME? [y/N] " reply
 case "$reply" in
   [yY]|[yY][eE][sS]) ;;
   *)
