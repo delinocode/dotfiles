@@ -15,8 +15,8 @@
     ./modules/agents.nix
   ];
 
-  home.username = "abdel";
-  home.homeDirectory = "/home/abdel";
+  home.username = "delino";
+  home.homeDirectory = "/home/delino";
   home.stateVersion = "24.05";
 
   programs.home-manager.enable = true;
