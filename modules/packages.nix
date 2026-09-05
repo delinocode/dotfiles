@@ -15,6 +15,7 @@
     zoxide
     nodejs
     neovim
+    zed-editor
     tmux
     btop
     fastfetch
