@@ -21,7 +21,9 @@
     ollama
     pi-coding-agent
     opencode
+    wezterm
     nerd-fonts.hack
     claude-code
+    starship
   ];
 }
