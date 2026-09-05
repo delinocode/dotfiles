@@ -13,6 +13,7 @@
     bat
     fzf
     zoxide
+    nodejs
     neovim
     tmux
     btop
