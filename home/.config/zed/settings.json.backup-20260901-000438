@@ -1,0 +1,214 @@
+{
+  "edit_predictions": {
+    "provider": "ollama"
+  },
+  "agent": {
+    "default_profile": "ask",
+    "tool_permissions": {
+      "tools": {
+        "terminal": {
+          "default": "allow"
+        }
+      }
+    },
+    "dock": "right",
+    "sidebar_side": "right",
+    "default_model": {
+      "provider": "MLX Serve Air",
+      "model": "ddalcu/Qwen3.8-27B-MLX-Serve-iQ-MLX-3.8bpw",
+      "enable_thinking": false
+    },
+    "favorite_models": [],
+    "model_parameters": []
+  },
+  "disable_ai": false,
+  "project_panel": {
+    "hide_root": false,
+    "hide_hidden": false,
+    "git_status_indicator": true,
+    "diagnostic_badges": false,
+    "scrollbar": {
+      "horizontal_scroll": true
+    },
+    "bold_folder_labels": true,
+    "entry_spacing": "comfortable",
+    "dock": "left"
+  },
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false,
+    "anthropic_retention": false
+  },
+  "session": {
+    "trust_all_worktrees": true
+  },
+  "vim_mode": true,
+  "icon_theme": {
+    "mode": "dark",
+    "light": "Zed (Default)",
+    "dark": "Zed (Default)"
+  },
+  "base_keymap": "Zed",
+  "ui_font_size": 16,
+  "buffer_font_size": 15,
+  "theme": {
+    "mode": "dark",
+    "light": "One Light",
+    "dark": "Dracula Solid"
+  },
+  "language_models": {
+    "openai_compatible": {
+      "MLX Serve Air": {
+        "api_url": "http://localhost:11138/v1",
+        "available_models": [
+          {
+            "name": "ddalcu/Qwen3.8-27B-MLX-Serve-4bit",
+            "display_name": "ddalcu/Qwen3.8-27B-MLX-Serve-4bit — MLX Serve Air (256K) — unloaded",
+            "max_tokens": 262144,
+            "max_output_tokens": 16384,
+            "capabilities": {
+              "tools": true,
+              "images": false,
+              "parallel_tool_calls": false,
+              "prompt_cache_key": false,
+              "chat_completions": true,
+              "interleaved_reasoning": false,
+              "max_tokens_parameter": false
+            }
+          },
+          {
+            "name": "ddalcu/Qwen3.8-27B-MLX-Serve-iQ-MLX-3.8bpw",
+            "display_name": "ddalcu/Qwen3.8-27B-MLX-Serve-iQ-MLX-3.8bpw — MLX Serve Air (62K)",
+            "max_tokens": 262144,
+            "max_output_tokens": 16384,
+            "capabilities": {
+              "tools": true,
+              "images": false,
+              "parallel_tool_calls": false,
+              "prompt_cache_key": false,
+              "chat_completions": true,
+              "interleaved_reasoning": false,
+              "max_tokens_parameter": false
+            }
+          }
+        ]
+      },
+      "MLX Serve Mac Pro": {
+        "api_url": "http://macpro:11234/v1",
+        "available_models": [
+          {
+            "name": "labhraighlep/Qwen3.8-Flash-Next-MLX-Serve-4bit",
+            "display_name": "labhraighlep/Qwen3.8-Flash-Next-MLX-Serve-4bit — MLX Serve Mac Pro (256K)",
+            "max_tokens": 262144,
+            "max_output_tokens": 16384,
+            "capabilities": {
+              "tools": true,
+              "images": false,
+              "parallel_tool_calls": false,
+              "prompt_cache_key": false,
+              "chat_completions": true,
+              "interleaved_reasoning": false,
+              "max_tokens_parameter": false
+            }
+          },
+          {
+            "name": "mlx-community/Muse-Glimmer-30B-4bit",
+            "display_name": "mlx-community/Muse-Glimmer-30B-4bit — MLX Serve Mac Pro (128K)",
+            "max_tokens": 131072,
+            "max_output_tokens": 16384,
+            "capabilities": {
+              "tools": true,
+              "images": true,
+              "parallel_tool_calls": false,
+              "prompt_cache_key": false,
+              "chat_completions": true,
+              "interleaved_reasoning": false,
+              "max_tokens_parameter": false
+            }
+          },
+          {
+            "name": "Qwen3.8-Flash-Next-oQ4e-MTP-128k",
+            "display_name": "Qwen3.8-Flash-Next-oQ4e-MTP-128k — MLX Serve Mac Pro (256K) — unloaded",
+            "max_tokens": 262144,
+            "max_output_tokens": 16384,
+            "capabilities": {
+              "tools": true,
+              "images": false,
+              "parallel_tool_calls": false,
+              "prompt_cache_key": false,
+              "chat_completions": true,
+              "interleaved_reasoning": false,
+              "max_tokens_parameter": false
+            }
+          }
+        ]
+      },
+      "Ollama Mac Pro": {
+        "api_url": "http://macpro:11434/v1",
+        "available_models": [
+          {
+            "name": "qwen3.8-flash-next:125b-mlx",
+            "display_name": "Qwen 3.8 Flash Next 125B — Mac Pro Ollama",
+            "max_tokens": 131072,
+            "max_output_tokens": 16384,
+            "capabilities": {
+              "tools": true,
+              "images": true,
+              "parallel_tool_calls": false,
+              "prompt_cache_key": false,
+              "chat_completions": true
+            }
+          },
+          {
+            "name": "qwen3:0.6b",
+            "display_name": "qwen3:0.6b — Ollama Mac Pro",
+            "max_tokens": 131072,
+            "max_output_tokens": 16384,
+            "capabilities": {
+              "tools": true,
+              "images": false,
+              "parallel_tool_calls": false,
+              "prompt_cache_key": false,
+              "chat_completions": true,
+              "interleaved_reasoning": false,
+              "max_tokens_parameter": false
+            }
+          }
+        ]
+      },
+      "Ollama Taichi": {
+        "api_url": "http://taichi:11434/v1",
+        "available_models": [
+          {
+            "name": "nemotron-3.5-lightning:30b-a3b",
+            "display_name": "Nemotron 3.5 Lightning 30B — Taichi Ollama",
+            "max_tokens": 131072,
+            "max_output_tokens": 16384,
+            "capabilities": {
+              "tools": true,
+              "images": false,
+              "parallel_tool_calls": false,
+              "prompt_cache_key": false,
+              "chat_completions": true
+            }
+          },
+          {
+            "name": "qwen3.8:27b-q8_0",
+            "display_name": "qwen3.8:27b-q8_0 — Ollama Taichi",
+            "max_tokens": 131072,
+            "max_output_tokens": 16384,
+            "capabilities": {
+              "tools": true,
+              "images": false,
+              "parallel_tool_calls": false,
+              "prompt_cache_key": false,
+              "chat_completions": true,
+              "interleaved_reasoning": false,
+              "max_tokens_parameter": false
+            }
+          }
+        ]
+      }
+    }
+  }
+}
