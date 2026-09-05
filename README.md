@@ -6,6 +6,10 @@ system, so you don't have to edit anything per machine.
 
 ## Prerequisites
 
+The only thing to install first is **Nix**. Then
+`bash rebuild.sh` (Quick Start) installs Home Manager and every other
+app for you.
+
 ### 1. Install Nix
 
 ```bash
@@ -22,24 +26,7 @@ source ~/.nix-profile/etc/profile.d/nix.sh
 # source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 ```
 
-### 2. Install Home Manager
-
-Add the Home Manager source for your Nixpkgs channel (this repo tracks
-`nixpkgs-unstable`, so use the `unstable` tarball), then let it create
-the environment:
-
-```bash
-NIXPKGS_CHANNEL=unstable
-
-# Add the matching Home Manager channel source
-nix-channel --add "https://github.com/nix-community/home-manager/archive/release-${NIXPKGS_CHANNEL}.tar.gz" home-manager
-nix-channel --update
-
-# Install the `home-manager` command (creates HM generation 1)
-home-manager switch
-```
-
-### 3. Enable flakes
+### 2. Enable flakes
 
 This repo's config is a Nix **flake**, so enable flakes and
 `nix-command`. Create `~/.config/nix/nix.conf` (or edit
@@ -57,33 +44,38 @@ export NIX_CONFIG='experimental-features = nix-command flakes'
 
 ## Quick Start
 
-### 1. Clone the repository
+### 1. Install everything via the dotfiles
+
+Run `bash rebuild.sh` — it **installs all apps for you** (no need to
+install anything else first, including Home Manager itself):
 
 ```bash
 git clone https://github.com/delinocode/dotfiles.git
 cd dotfiles
-
-# Use the universal branch (works on any Ubuntu/Linux box):
 git checkout universal
-# (or the current machine branch, e.g. `taichi-final`)
-```
 
-### 2. Apply the configuration
-
-```bash
-# Build and apply Home Manager configuration
+# This installs every app (Home Manager + all packages.nix packages):
 bash rebuild.sh
+# Answer the prompt with y to apply
 ```
 
-When prompted (the name/branch depend on your machine/user):
+When prompted:
 
 ```
 Apply Home Manager configuration for <your-user>? [y/N] y
 ```
 
-### 3. Verify installation
+**What `rebuild.sh` installs** (from `modules/packages.nix`, plus
+`home-manager` itself): git, gh, curl, wget, jq, yq, ripgrep, fd, eza,
+bat, fzf, zoxide, neovim, tmux, btop, fastfetch, lazygit, ollama,
+pi-coding-agent, opencode, wezterm, starship, nerd-fonts.hack,
+claude-code.
+
+### 2. Verify installation
 
 ```bash
+# Re-login (or reconnect SSH) so the new Zsh + apps are on PATH
+
 # Check git config (should show your name/email)
 git config --global user.name
 git config --global user.email
@@ -107,7 +99,8 @@ bash scripts/doctor.sh
 ├── modules/               # Modular configurations
 │   ├── aliases.nix        # Shell aliases (Pi, Claude Code, OpenCode)
 │   ├── agents.nix         # Agent-specific settings
-│   ├── packages.nix       # System packages
+│   ├── packages.nix       # Apps to install (git, neovim, tmux,
+│   │                      #   ollama, pi/opencode/claude-code, wezterm, …)
 │   ├── shell.nix          # Shell configuration
 │   ├── tmux.nix           # Tmux settings
 │   └── files.nix          # File links
@@ -137,9 +130,10 @@ cd ~/dotfiles
 bash rebuild.sh
 ```
 
-This checks the flake, builds (without activating), then prompts to
-apply. Answer `y` to activate the Home Manager generation and set Zsh as
-your login shell.
+This checks the flake, builds **all** apps (without activating), then
+prompts to apply. Answer `y` to install everything (Home Manager + all
+packages), activate the Home Manager generation, and set Zsh as your login
+shell.
 
 ### Update flake inputs
 
@@ -159,9 +153,11 @@ git commit -m "Description of changes"
 git push origin universal   # or origin taichi-final
 
 # On another machine, pull and apply
-git fetch origin
-git checkout universal       # first time
+# (first time only, or use the branch for that machine)
+git checkout universal
 git reset --hard origin/universal
+
+# Installs all apps again on the new machine:
 bash rebuild.sh
 ```
 
@@ -186,21 +182,26 @@ hosts listed here.
 
 ### Pi (AI assistant)
 
-- `pi-tmux-taichi` — Pi with local Ollama on Taichi
-- `pi-tmux-macpro` — Pi with remote Ollama on MacPro
-- `pi-tmux-mlx-macpro` — Pi with MLX on MacPro
+- `pi-tmux-taichi` — Pi via the `taichi-ollama` provider (Ollama host
+  `http://taichi:11434`; run `rebuild.sh` to install Pi)
+- `pi-tmux-macpro` — Pi via the `macpro-ollama` provider
+  (`http://macpro:11434`)
+- `pi-tmux-mlx-macpro` — Pi via the `macpro-mlx` provider
+  (`http://macpro:11234`)
 
 ### Claude Code
 
-- `cc-tmux-taichi` — Claude Code with local Ollama
-- `cc-tmux-macpro` — Claude Code with remote Ollama
-- `cc-tmux-mlx-macpro` — Claude Code with MLX
+- `cc-tmux-taichi` — Claude Code via the `taichi-ollama` provider
+  (`http://taichi:11434`)
+- `cc-tmux-macpro` — Claude Code via `macpro-ollama` (`http://macpro:11434`)
+- `cc-tmux-mlx-macpro` — Claude Code via `macpro-mlx` (`http://macpro:11234`)
 
 ### OpenCode
 
-- `oc-tmux-taichi` — OpenCode with local Ollama
-- `oc-tmux-macpro` — OpenCode with remote Ollama
-- `oc-tmux-mlx-macpro` — OpenCode with MLX
+- `oc-tmux-taichi` — OpenCode via the `taichi-ollama` provider
+  (`http://taichi:11434`)
+- `oc-tmux-macpro` — OpenCode via `macpro-ollama` (`http://macpro:11434`)
+- `oc-tmux-mlx-macpro` — OpenCode via `macpro-mlx` (`http://macpro:11234`)
 
 ### Home Manager shortcuts
 
@@ -236,19 +237,20 @@ nix-channel --update
 
 ### Home Manager state version mismatch
 
-Update `home.stateVersion` in `home.nix` to match your NixOS version.
+Set `home.stateVersion` in `home.nix` to your Ubuntu release's `YY.MM`
+(e.g. `"24.04"`).
 
 ### "does not provide attribute homeConfigurations.<user>"
 
-Run `bash rebuild.sh` (it now uses `--impure`, which lets the flake see
-your actual user). On a different machine the user name is detected
-automatically.
+Just run `bash rebuild.sh` (it uses `--impure` and passes the flake as a
+local path, so it always builds/activates the right user config).
 
 ### `home-manager: command not found`
 
-Install Home Manager via your Nixpkgs channel (Prerequisites → 2):
-add the `release-<channel>` tarball with `nix-channel --add`, run
-`nix-channel --update`, then `home-manager switch`.
+You don't have to install it first — `bash rebuild.sh` installs Home
+Manager and all packages via the flake (`home-manager switch --impure`).
+If you ran something else that needs `home-manager`, open a fresh shell
+after `rebuild.sh` so the new generation is on PATH.
 
 ## License
 
