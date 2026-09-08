@@ -1,4 +1,5 @@
 {
+  "cli_default_open_behavior": "existing_window",
   "ssh_connections": [
     {
       "host": "taichi",
@@ -71,8 +72,8 @@
     "dock": "right",
     "sidebar_side": "right",
     "default_model": {
-      "provider": "ollama_taichi",
-      "model": "qwen3.8:27b-q8_0",
+      "provider": "mlx_serve_macpro",
+      "model": "labhraighlep/Qwen3.8-Flash-Next-MLX-Serve-4bit",
       "enable_thinking": false
     },
     "favorite_models": [],
@@ -110,8 +111,8 @@
   "buffer_font_size": 15,
   "theme": {
     "mode": "dark",
-    "light": "Catppuccin Latte - No Italics",
-    "dark": "Catppuccin Frappé"
+    "light": "Panda Light",
+    "dark": "Midnight Marina"
   },
   "language_models": {
     "openai_compatible": {

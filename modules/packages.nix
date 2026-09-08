@@ -28,5 +28,7 @@
     nerd-fonts.hack
     claude-code
     starship
+    uv
+    jupyter  # JupyterLab (interface moderne) # Python 3 avec pip
   ];
 }
