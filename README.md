@@ -26,6 +26,14 @@ source ~/.nix-profile/etc/profile.d/nix.sh
 # source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 ```
 
+> Pick **one** installer, not both. Running the single-user script and
+> the Determinate installer back-to-back on the same machine leaves two
+> separate Nix stores/daemons half-configured and causes confusing
+> `command not found` errors. If that already happened, check which one
+> "won" with `ls -la /nix/var/nix/profiles/default/etc/profile.d/` — if
+> `nix-daemon.sh` is there, source that one and remove the single-user
+> lines from your shell rc file.
+
 ### 2. Enable flakes
 
 This repo's config is a Nix **flake**, so enable flakes and
@@ -59,6 +67,15 @@ bash rebuild.sh
 # Answer the prompt with y to apply
 ```
 
+> Do **not** run `nix profile install ...#home-manager` yourself before
+> this. `rebuild.sh` automatically falls back to `nix run
+> github:nix-community/home-manager` when `home-manager` isn't on PATH
+> yet, so it bootstraps itself without leaving anything in your user
+> profile. If you already ran `nix profile install` manually and hit an
+> "existing package already provides ... home-manager.fish" conflict,
+> remove it with `nix profile remove home-manager` and re-run
+> `bash rebuild.sh`.
+
 When prompted:
 
 ```
@@ -67,9 +84,9 @@ Apply Home Manager configuration for <your-user>? [y/N] y
 
 **What `rebuild.sh` installs** (from `modules/packages.nix`, plus
 `home-manager` itself): git, gh, curl, wget, jq, yq, ripgrep, fd, eza,
-bat, fzf, zoxide, neovim, tmux, btop, fastfetch, lazygit, ollama,
-pi-coding-agent, opencode, wezterm, starship, nerd-fonts.hack,
-claude-code.
+bat, fzf, zoxide, neovim, zed-editor, tmux, btop, fastfetch, lazygit,
+ollama, pi-coding-agent, opencode, wezterm, starship, nerd-fonts.hack,
+claude-code, jupyter.
 
 ### 2. Verify installation
 
@@ -89,6 +106,17 @@ alias oc-tmux-taichi
 bash scripts/doctor.sh
 ```
 
+### 3. Enable GPU support (wezterm, zed, and other GUI apps)
+
+On non-NixOS systems (Pop!_OS, Ubuntu, etc.), Nix-built GUI apps can't
+see your host's GPU drivers by default. `rebuild.sh` already tries to
+activate this automatically, but if `wezterm`/`zed` fail with a
+`libEGL.so` / `libvulkan.so` error, run:
+
+```bash
+bash scripts/enable-gpu-nix.sh
+```
+
 ## Structure
 
 ```
@@ -105,7 +133,7 @@ bash scripts/doctor.sh
 │   ├── tmux.nix           # Tmux settings
 │   └── files.nix          # File links
 ├── home/                  # Config files symlinked into your home
-│   ├── .config/           # App configs: wezterm, nvim, opencode, herdr
+│   ├── .config/           # App configs: wezterm, nvim, opencode, herdr, zed
 │   ├── .pi/               # Pi configuration
 │   ├── .claude/           # Claude Code config
 │   ├── AGENTS.md          # Agent documentation
@@ -114,6 +142,7 @@ bash scripts/doctor.sh
 │   ├── cc-mlx-picker.sh   # MLX model picker for Claude Code
 │   ├── check.sh           # Lint/format checks
 │   ├── doctor.sh          # Host/command/GPU health check
+│   ├── enable-gpu-nix.sh  # Activate GPU drivers for Nix GUI apps
 │   ├── set-login-shell-zsh.sh  # Set Zsh as login shell
 │   └── zed-models.py      # Zed editor models config
 ├── tests/                 # Test scripts
@@ -132,8 +161,8 @@ bash rebuild.sh
 
 This checks the flake, builds **all** apps (without activating), then
 prompts to apply. Answer `y` to install everything (Home Manager + all
-packages), activate the Home Manager generation, and set Zsh as your login
-shell.
+packages), activate the Home Manager generation, set Zsh as your login
+shell, and enable GPU support for GUI apps.
 
 ### Update flake inputs
 
@@ -247,10 +276,42 @@ local path, so it always builds/activates the right user config).
 
 ### `home-manager: command not found`
 
-You don't have to install it first — `bash rebuild.sh` installs Home
-Manager and all packages via the flake (`home-manager switch --impure`).
-If you ran something else that needs `home-manager`, open a fresh shell
-after `rebuild.sh` so the new generation is on PATH.
+You don't have to install it first — `bash rebuild.sh` now detects this
+automatically and runs Home Manager via `nix run
+github:nix-community/home-manager` instead of requiring it on PATH. If
+you still see this error from a command outside `rebuild.sh`, either
+open a fresh shell after `rebuild.sh` finishes (so the new generation's
+`home-manager` is on PATH), or run commands through
+`nix run --impure github:nix-community/home-manager -- <subcommand>`.
+
+### "An existing package already provides ... home-manager.fish"
+
+This happens if `home-manager` was installed twice: once manually via
+`nix profile install ...#home-manager`, and once by Home Manager's own
+`programs.home-manager.enable = true` module. Fix it by removing the
+manual profile entry and re-running `rebuild.sh` (which now bootstraps
+Home Manager via `nix run`, so you never need to `nix profile install`
+it yourself):
+
+```bash
+nix profile list
+nix profile remove home-manager   # or the index number nix profile list shows
+bash rebuild.sh
+```
+
+### GUI apps (wezterm, zed) fail with `libEGL.so` / `libvulkan.so` errors
+
+This is the classic "Nix package manager on non-NixOS" GPU issue: the
+Nix-built binary can't see your distro's GPU drivers. Run:
+
+```bash
+bash scripts/enable-gpu-nix.sh
+```
+
+`home.nix` already sets `targets.genericLinux.gpu.enable = true;`, which
+makes `rebuild.sh` print a one-time
+`sudo /nix/store/*-non-nixos-gpu/bin/non-nixos-gpu-setup` command; the
+script above runs that for you and restarts the service.
 
 ## ECC (Claude Code plugin)
 
@@ -265,6 +326,7 @@ The script fixes the `Managed ECC content ... overlaps the Claude plugin`
 error (removes the old managed state), then runs `npx ecc-universal setup`
 to install the `ecc@ecc` plugin. It works on any Linux machine. After it
 finishes, restart Claude Code (or run `/reload-plugins`).
+
 ## License
 
 MIT
