@@ -42,6 +42,7 @@
       "claude-code"
       "claude"
       "ollama"
+      "omniwm"
     ];
   };
 }

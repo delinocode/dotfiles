@@ -81,5 +81,6 @@
 
     # Fonts
     nerd-fonts.hack
+
   ];
 }
